@@ -1,0 +1,23 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "OptiScoop",
+  "alternateName": "OptiScoop - Empowering Institutional Narratives",
+  "url": "https://optiscoop.vercel.app",
+  "description": "OptiScoop empowers public relations professionals within Indonesia's Ministry of Immigration and Correctional sectors to produce optimized news and headlines with AI-powered tools.",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://optiscoop.vercel.app/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "OptiScoop",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://optiscoop.vercel.app/optiscoop.png",
+      "width": 1200,
+      "height": 630
+    }
+  }
+}

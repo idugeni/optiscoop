@@ -8,7 +8,7 @@ interface UseMetadataProps {
   description?: string;
 }
 
-export function useMetadata({ title, description }: UseMetadataProps = {}): void {
+export function useMetadata(p0: string, p1: string, { title, description }: UseMetadataProps = {}): void {
   useLayoutEffect(() => {
     let finalTitle: string = "";
     if (title) {

@@ -6,17 +6,17 @@ Thank you for your interest in our project. We understand that sometimes you may
 
 Before reaching out directly, please consider the following resources:
 
-- **Documentation:** Our comprehensive [Documentation](https://astralumen.com/documentation) covers most common questions and usage details.
-- **Frequently Asked Questions (FAQs):** Check our [FAQ](https://astralumen.com/faq) section for answers to recurring queries.
-- **Community Forum:** Join our community at [Forum](https://astralumen.com/forum) where you can interact with other users and contributors.
-- **Issue Tracker:** If you encounter a bug or wish to request a new feature, please use our [Issue Tracker](https://github.com/idugeni/astralumen/issues).
+- **Documentation:** Our comprehensive [Documentation](https://optiscoop.com/documentation) covers most common questions and usage details.
+- **Frequently Asked Questions (FAQs):** Check our [FAQ](https://optiscoop.com/faq) section for answers to recurring queries.
+- **Community Forum:** Join our community at [Forum](https://optiscoop.com/forum) where you can interact with other users and contributors.
+- **Issue Tracker:** If you encounter a bug or wish to request a new feature, please use our [Issue Tracker](https://github.com/idugeni/optiscoop/issues).
 
 ## How to Contact Us
 
 If you need further assistance, feel free to reach out using one of the methods below:
 
-- **Email:** [support@astralumen.com](mailto:support@astralumen.com)
-- **Support Portal:** Visit our [Support Portal](https://astralumen.com/support) for direct assistance.
+- **Email:** [support@optiscoop.com](mailto:support@optiscoop.com)
+- **Support Portal:** Visit our [Support Portal](https://optiscoop.com/support) for direct assistance.
 
 We strive to respond to all inquiries within 48 hours on business days. Please provide as much detail as possible to help us understand and resolve your issue efficiently.
 
@@ -31,9 +31,9 @@ To help us assist you more effectively, please include the following information
 
 ## Additional Resources
 
-- [Project Documentation](https://astralumen.com/documentation)
-- [Community Forum](https://astralumen.com/forum)
-- [Issue Tracker](https://github.com/idugeni/astralumen/issues)
+- [Project Documentation](https://optiscoop.com/documentation)
+- [Community Forum](https://optiscoop.com/forum)
+- [Issue Tracker](https://github.com/idugeni/optiscoop/issues)
 
 ## Disclaimer
 

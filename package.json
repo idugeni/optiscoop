@@ -1,16 +1,16 @@
 {
-  "name": "astralumen",
+  "name": "optiscoop",
   "version": "1.0.0",
-  "description": "AstraLumen is a futuristic Next.js 15 theme that combines cutting-edge design with the elegance of Tailwind CSS and Shadcn UI to create stunning, responsive web experiences.",
+  "description": "OptiScoop empowers public relations professionals within Indonesia's Ministry of Immigration and Correctional sectors to produce optimized news and headlines.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/idugeni/astralumen.git"
+    "url": "https://github.com/idugeni/optiscoop.git"
   },
   "keywords": [
     "next",
     "react",
     "tailwind",
-    "astralumen",
+    "optiscoop",
     "shadcn ui"
   ],
   "author": "Eliyanto Sarage",

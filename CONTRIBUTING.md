@@ -42,7 +42,7 @@ We welcome contributions in various forms. Whether you're reporting a bug, sugge
 
 If you encounter a bug or have suggestions for improvement, please follow these steps:
 
-- **Search Existing Issues:** Check the [issue tracker](https://github.com/idugeni/astralumen/issues) to avoid duplicates.
+- **Search Existing Issues:** Check the [issue tracker](https://github.com/idugeni/optiscoop/issues) to avoid duplicates.
 - **Create a Detailed Issue:** Include a clear description, steps to reproduce the issue, screenshots/logs if applicable, and reference any related issues.
 - **Be Patient:** Our team reviews every issue with care and may ask for additional details.
 
