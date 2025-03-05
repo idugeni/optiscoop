@@ -1,12 +1,16 @@
 'use client';
 
-import { Sparkles, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { Sparkles, AlertCircle, CheckCircle, Info, CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import ArticleDisplay from '@/components/ai-news/ArticleDisplay';
-import { DatePicker } from '@/components/ui/date-picker';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
 interface NewsGeneratorFormProps {
   title: string;
@@ -45,6 +49,8 @@ export default function NewsGeneratorForm({
   apiKey,
   generateArticle,
 }: NewsGeneratorFormProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -112,13 +118,51 @@ export default function NewsGeneratorForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="newsDate">Tanggal Berita</Label>
-        <DatePicker
-          date={newsDate}
-          setDate={setNewsDate}
-          disabled={loading}
-          placeholder="Pilih tanggal berita"
-        />
+        <Label htmlFor="newsDate" className="font-medium">Tanggal Berita</Label>
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              id="newsDate"
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-normal",
+                !newsDate && "text-muted-foreground"
+              )}
+              disabled={loading}
+              onClick={() => setIsOpen(true)}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {newsDate ? format(newsDate, "PPP") : <span>Pilih tanggal berita</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={newsDate}
+              onSelect={(date) => {
+                setNewsDate(date);
+                setIsOpen(false);
+              }}
+              initialFocus
+            />
+            <div className="p-2 border-t flex justify-between">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setNewsDate(undefined)}
+              >
+                Reset
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setIsOpen(false)}
+              >
+                Tutup
+              </Button>
+            </div>
+          </PopoverContent>
+        </Popover>
         <p className="text-sm text-muted-foreground">
           Tanggal pembuatan berita
         </p>
