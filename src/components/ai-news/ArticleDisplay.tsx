@@ -31,15 +31,17 @@ export default function ArticleDisplay({ title, article }: ArticleDisplayProps) 
   const removeHashtags = (text: string) => {
     return text.replace(/#[\w\u0080-\uFFFF]+/g, '').trim();
   };
-
+  
   // Extract hashtags and clean article text
   const hashtags = extractHashtags(article);
   const cleanArticle = removeHashtags(article);
   
   // Calculate statistics for both clean article and full content
-  const characterCount = cleanArticle.length;
-  const wordCount = countWords(cleanArticle);
-
+  
+  // Calculate statistics for complete content (title + article + hashtags)
+  const fullContent = `${title}\n\n${cleanArticle}\n\n${hashtags}`;
+  const totalCharacterCount = fullContent.length;
+  const totalWordCount = countWords(fullContent);
   const copyToClipboard = () => {
     // Format content with proper spacing without metadata
     let fullContent = `${title}\n\n${cleanArticle}`;
@@ -52,7 +54,6 @@ export default function ArticleDisplay({ title, article }: ArticleDisplayProps) 
     navigator.clipboard.writeText(fullContent);
     toast.success('Artikel berhasil disalin!');
   };
-
   return (
     <div className="space-y-4">
       <Card>
@@ -92,7 +93,7 @@ export default function ArticleDisplay({ title, article }: ArticleDisplayProps) 
           </Badge>
         </CardHeader>
         <CardDescription className="px-6 text-sm text-muted-foreground">
-          Statistik artikel yang telah dibersihkan dari hashtag
+          Statistik artikel lengkap termasuk judul, konten, dan hashtag
         </CardDescription>
         <CardContent className="pt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -103,13 +104,13 @@ export default function ArticleDisplay({ title, article }: ArticleDisplayProps) 
                   <p className="font-medium">Total Karakter</p>
                 </div>
                 <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => {
-                  navigator.clipboard.writeText(characterCount.toString());
+                  navigator.clipboard.writeText(totalCharacterCount.toString());
                   toast.success('Jumlah karakter disalin!');
                 }}>
                   <Copy className="h-3.5 w-3.5" />
                 </Button>
               </div>
-              <p className="text-2xl font-bold text-primary">{characterCount.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-primary">{totalCharacterCount.toLocaleString()}</p>
             </div>
             <div className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/10 transition-all duration-300 hover:shadow-md group">
               <div className="flex items-center justify-between mb-2">
@@ -118,13 +119,13 @@ export default function ArticleDisplay({ title, article }: ArticleDisplayProps) 
                   <p className="font-medium">Total Kata</p>
                 </div>
                 <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => {
-                  navigator.clipboard.writeText(wordCount.toString());
+                  navigator.clipboard.writeText(totalWordCount.toString());
                   toast.success('Jumlah kata disalin!');
                 }}>
                   <Copy className="h-3.5 w-3.5" />
                 </Button>
               </div>
-              <p className="text-2xl font-bold text-primary">{wordCount.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-primary">{totalWordCount.toLocaleString()}</p>
             </div>
           </div>
         </CardContent>

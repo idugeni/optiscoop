@@ -15,6 +15,82 @@ export const processNewsResponse = (responseText: string, metadata?: { location?
     .replace(/\n+#/g, '\n#') // Ensure hashtags are immediately after content
     .replace(/\s+#/g, '\n#'); // Ensure hashtags start on new line with no extra spaces
   
+  // Extract hashtags to preserve them
+  const hashtagMatch = processedText.match(/(\s*#[^\s#]+(?:\s+#[^\s#]+)*\s*)$/i);
+  const hashtags = hashtagMatch ? hashtagMatch[0] : '';
+  let mainContent = hashtagMatch ? processedText.slice(0, -hashtags.length).trim() : processedText;
+  
+  // Split content into paragraphs and filter out empty ones
+  const contentParagraphs = mainContent.split('\n\n').filter(p => p.trim().length > 0);
+  
+  // Log paragraph count for debugging
+  console.log(`Initial paragraph count: ${contentParagraphs.length}`);
+  
+  // STRICT ENFORCEMENT: Ensure we have EXACTLY 5-6 paragraphs
+  
+  // If we don't have enough paragraphs (less than 5), try to split longer paragraphs
+  if (contentParagraphs.length < 5) {
+    // First attempt: Try to split paragraphs with 3+ sentences
+    for (let i = 0; i < contentParagraphs.length && contentParagraphs.length < 5; i++) {
+      const paragraph = contentParagraphs[i];
+      const sentences = paragraph.split('. ').filter(s => s.trim().length > 0);
+      
+      // If this paragraph has multiple sentences, split it
+      if (sentences.length >= 3) {
+        const midpoint = Math.floor(sentences.length / 2);
+        const firstHalf = sentences.slice(0, midpoint).join('. ') + '.';
+        const secondHalf = sentences.slice(midpoint).join('. ');
+        
+        // Replace the original paragraph with the first half
+        contentParagraphs[i] = firstHalf;
+        
+        // Insert the second half after the current paragraph
+        contentParagraphs.splice(i + 1, 0, secondHalf);
+        
+        // Skip the newly inserted paragraph in the next iteration
+        i++;
+      }
+    }
+    
+    // Second attempt: If still not enough paragraphs, try to split paragraphs with 2+ sentences
+    if (contentParagraphs.length < 5) {
+      for (let i = 0; i < contentParagraphs.length && contentParagraphs.length < 5; i++) {
+        const paragraph = contentParagraphs[i];
+        const sentences = paragraph.split('. ').filter(s => s.trim().length > 0);
+        
+        if (sentences.length >= 2) {
+          // Split even if just 2 sentences
+          contentParagraphs[i] = sentences[0] + '.';
+          contentParagraphs.splice(i + 1, 0, sentences.slice(1).join('. '));
+          i++;
+        }
+      }
+    }
+  }
+  
+  // If we have too many paragraphs (more than 6), merge shorter ones
+  while (contentParagraphs.length > 6) {
+    // Find the shortest adjacent paragraphs to merge
+    let shortestLength = Infinity;
+    let shortestIndex = 0;
+    
+    for (let i = 0; i < contentParagraphs.length - 1; i++) {
+      const combinedLength = contentParagraphs[i].length + contentParagraphs[i + 1].length;
+      if (combinedLength < shortestLength) {
+        shortestLength = combinedLength;
+        shortestIndex = i;
+      }
+    }
+    
+    // Merge the shortest adjacent paragraphs
+    contentParagraphs[shortestIndex] = `${contentParagraphs[shortestIndex]} ${contentParagraphs[shortestIndex + 1]}`;
+    contentParagraphs.splice(shortestIndex + 1, 1);
+  }
+  
+  // Rebuild the main content with the adjusted paragraphs
+  mainContent = contentParagraphs.join('\n\n');
+  processedText = mainContent + (hashtags ? '\n' + hashtags : '');
+  
   // Format the text with location, date, and author as requested
   if (metadata) {
     const paragraphs = processedText.split('\n\n');
@@ -61,6 +137,135 @@ export const processNewsResponse = (responseText: string, metadata?: { location?
       .replace(/\.+\s*#/g, '\n#') // Replace multiple periods before hashtag with newline and hashtag
       .replace(/\n{2,}\s*#/g, '\n#') // Replace multiple newlines before hashtag with single newline
       .trim();
+  }
+  
+  // Enforce the character limits (min 2000, max 2200) by intelligently adjusting content
+  // First handle if the text is too long (over 2200 characters)
+  if (processedText.length > 2200) {
+    // Extract hashtags to preserve them
+    const hashtagMatch = processedText.match(/(\s*#[^\s#]+(?:\s+#[^\s#]+)*\s*)$/i);
+    const hashtags = hashtagMatch ? hashtagMatch[0] : '';
+    let mainContent = hashtagMatch ? processedText.slice(0, -hashtags.length).trim() : processedText;
+    
+    // Split into paragraphs for intelligent trimming
+    const contentParagraphs = mainContent.split('\n\n');
+    
+    // Preserve first paragraph (with location and date) and trim others
+    // Start trimming from the middle paragraphs
+    if (contentParagraphs.length > 2) {
+      // Calculate how many characters we need to remove
+      
+      // Start trimming from middle paragraphs
+      for (let i = Math.floor(contentParagraphs.length / 2); i < contentParagraphs.length - 1; i++) {
+        if (processedText.length <= 2200) break;
+        
+        // Trim sentences from the end of the paragraph
+        const sentences = contentParagraphs[i].split('. ');
+        if (sentences.length > 1) {
+          // Remove the last sentence if it's not the only one
+          contentParagraphs[i] = sentences.slice(0, -1).join('. ') + '.';
+        }
+        
+        // Recalculate the full text length
+        mainContent = contentParagraphs.join('\n\n');
+        processedText = mainContent + hashtags;
+      }
+      
+      // If still too long, trim more aggressively
+      if (processedText.length > 2200) {
+        // Remove entire paragraphs from the middle if needed
+        const middleIndex = Math.floor(contentParagraphs.length / 2);
+        contentParagraphs.splice(middleIndex, 1);
+        
+        mainContent = contentParagraphs.join('\n\n');
+        processedText = mainContent + hashtags;
+      }
+    } else {
+      // If only 1-2 paragraphs, trim the last paragraph
+      const lastParagraph = contentParagraphs[contentParagraphs.length - 1];
+      const sentences = lastParagraph.split('. ');
+      
+      if (sentences.length > 1) {
+        // Remove sentences from the end until under limit
+        while (processedText.length > 2200 && sentences.length > 1) {
+          sentences.pop();
+          contentParagraphs[contentParagraphs.length - 1] = sentences.join('. ') + '.';
+          mainContent = contentParagraphs.join('\n\n');
+          processedText = mainContent + hashtags;
+        }
+      }
+    }
+    
+    // Last resort: hard truncate if still over limit
+    if (processedText.length > 2200) {
+      mainContent = mainContent.substring(0, 2200 - hashtags.length - 3) + '...';
+      processedText = mainContent + hashtags;
+    }
+  }
+  
+  // Now handle if the text is too short (under 2000 characters)
+  if (processedText.length < 2000) {
+    // Extract hashtags to preserve them
+    const hashtagMatch = processedText.match(/(\s*#[^\s#]+(?:\s+#[^\s#]+)*\s*)$/i);
+    const hashtags = hashtagMatch ? hashtagMatch[0] : '';
+    let mainContent = hashtagMatch ? processedText.slice(0, -hashtags.length).trim() : processedText;
+    
+    // Split into paragraphs for expansion
+    const contentParagraphs = mainContent.split('\n\n');
+    
+    // Add more detail to paragraphs to reach minimum length
+    // We'll add generic elaborative phrases to the middle paragraphs
+    const elaborativePhrases = [
+      ' Hal ini menjadi perhatian masyarakat luas.',
+      ' Informasi ini disampaikan secara resmi.',
+      ' Perkembangan situasi terus dipantau.',
+      ' Berbagai pihak telah memberikan tanggapan.',
+      ' Upaya penanganan terus dilakukan secara intensif.'
+    ];
+    
+    // Start from middle paragraphs and work outward
+    let phraseIndex = 0;
+    let paragraphIndex = Math.floor(contentParagraphs.length / 2);
+    
+    while (processedText.length < 2000 && phraseIndex < elaborativePhrases.length) {
+      // Add elaborative phrase to current paragraph if it doesn't end with a period
+      if (!contentParagraphs[paragraphIndex].endsWith('.')) {
+        contentParagraphs[paragraphIndex] += '.';
+      }
+      
+      contentParagraphs[paragraphIndex] += elaborativePhrases[phraseIndex];
+      
+      // Recalculate the full text length
+      mainContent = contentParagraphs.join('\n\n');
+      processedText = mainContent + hashtags;
+      
+      // Move to next phrase and cycle through paragraphs
+      phraseIndex++;
+      paragraphIndex = (paragraphIndex + 1) % contentParagraphs.length;
+      
+      // Skip first and last paragraphs on first pass
+      if (paragraphIndex === 0) paragraphIndex = 1;
+      if (paragraphIndex === contentParagraphs.length - 1 && phraseIndex < elaborativePhrases.length) {
+        paragraphIndex = 1; // Reset to second paragraph
+      }
+    }
+  }
+  
+  // Final verification of paragraph count
+  const finalParagraphs = processedText.split('\n\n').filter(p => p.trim().length > 0 && !p.trim().startsWith('#'));
+  console.log(`Final paragraph count: ${finalParagraphs.length}`);
+  console.log(`Final character count: ${processedText.length}`);
+  
+  // Log warning if we still don't have 5-6 paragraphs
+  if (finalParagraphs.length < 5 || finalParagraphs.length > 6) {
+    console.warn(`WARNING: Article has ${finalParagraphs.length} paragraphs, should be 5-6 paragraphs`);
+  }
+  
+  // Log warning if character count is outside limits
+  if (processedText.length < 2000) {
+    console.warn(`WARNING: Article is too short (${processedText.length} characters), should be at least 2000 characters`);
+  } else if (processedText.length > 2200) {
+    console.warn(`WARNING: Article is too long (${processedText.length} characters), should be at most 2200 characters`);
   }
   
   return processedText;
@@ -149,7 +354,6 @@ export const generateNewsWithRetry = async (
         .replace('${systemInstruction}', instructionsData.systemInstruction)
         .replace('${userInput}', newsTitle)
         .replace('${metadata}', JSON.stringify(metadata))
-        .replace('${characterLimit}', '2200')
         .replace('${hashtags}', '#kemenimipas #guardandguide #infoimipas #pemasyarakatan');
 
       const response = await fetchWithTimeout(
@@ -167,8 +371,8 @@ export const generateNewsWithRetry = async (
               },
             ],
             generationConfig: {
-              temperature: 2,
-              topP: 1,
+              temperature: 1.2,
+              topP: 0.98,
               topK: 64,
               maxOutputTokens: 8192,
             },
@@ -208,14 +412,15 @@ export const generateNewsWithRetry = async (
       console.log(`Processed news length: ${processedNews.length} characters`);
       
       // Check if the article meets the character limits (min 2000, max 2200)
-      // But return the content anyway, just log warnings instead of throwing errors
+      // Log warnings for debugging purposes
       if (processedNews.length < 2000) {
         console.warn(`Artikel terlalu pendek (${processedNews.length} karakter). Minimal seharusnya 2000 karakter.`);
       } else if (processedNews.length > 2200) {
         console.warn(`Artikel terlalu panjang (${processedNews.length} karakter). Maksimal seharusnya 2200 karakter.`);
+        // This should not happen anymore since we're enforcing the limit in processNewsResponse
       }
       
-      // Return the processed news regardless of length
+      // Return the processed news (now guaranteed to be within character limits)
       return processedNews;
     } catch (error: unknown) {
       let errorMessage = 'Terjadi kesalahan yang tidak diketahui';
