@@ -61,13 +61,16 @@ export const generateNewsWithRetry = async (
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      // Format date if available
+      // Format date if available - for display in metadata
       const formattedDate = newsDate ? new Date(newsDate).toLocaleDateString('id-ID', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       }) : '';
+      
+      // Format date in DD/MM format for article first paragraph
+      const shortDate = newsDate ? `(${new Date(newsDate).getDate().toString().padStart(2, '0')}/${(new Date(newsDate).getMonth() + 1).toString().padStart(2, '0')})` : '';
 
       // Prepare metadata for the news article
       const metadata = {
@@ -76,6 +79,7 @@ export const generateNewsWithRetry = async (
         author: author || '',
         quoteAttribution: quoteAttribution || '',
         date: formattedDate,
+        shortDate: shortDate
       };
 
       // Replace placeholders in the prompt template
@@ -123,11 +127,11 @@ export const generateNewsWithRetry = async (
       }
 
       const processedNews = processNewsResponse(responseText);
-      if (processedNews.length > 100) { // Ensure we have a substantial article
+      if (processedNews.length >= 2000 && processedNews.length <= 2200) { // Ensure article meets character requirements
         return processedNews;
       }
 
-      throw new Error('Artikel yang dihasilkan terlalu pendek');
+      throw new Error(`Artikel tidak memenuhi persyaratan panjang karakter (${processedNews.length} karakter). Harus antara 2000-2200 karakter.`);
     } catch (error: unknown) {
       let errorMessage = 'Terjadi kesalahan yang tidak diketahui';
       if (error instanceof Error) {

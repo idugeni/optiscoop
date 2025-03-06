@@ -75,7 +75,7 @@ export default function AiNews() {
     } catch (error) {
       console.error(error);
       setAlertInfo(
-        'Terjadi kesalahan dalam proses pembuatan artikel. Silakan coba lagi nanti.'
+        'Terjadi kesalahan saat membuat artikel. Mohon periksa koneksi internet Anda dan pastikan API key valid, atau coba lagi dalam beberapa saat.'
       );
       toast.error('Gagal membuat artikel');
     }

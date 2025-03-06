@@ -71,7 +71,7 @@ export default function AiTitle() {
     } catch (error) {
       console.error(error);
       setAlertInfo(
-        'Terjadi kesalahan dalam proses pembuatan judul. Silakan coba lagi nanti.'
+        'Terjadi kesalahan saat membuat judul. Mohon periksa koneksi internet Anda dan pastikan API key valid, atau coba lagi dalam beberapa saat.'
       );
       toast.error('Gagal membuat judul');
     }
