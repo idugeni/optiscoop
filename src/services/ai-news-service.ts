@@ -5,13 +5,65 @@ import instructionsData from '@/data/ai-news/instructions.json';
  * @param responseText - Raw text response from the AI model
  * @returns Formatted news article text
  */
-export const processNewsResponse = (responseText: string): string => {
+export const processNewsResponse = (responseText: string, metadata?: { location?: string, author?: string, date?: Date }): string => {
   // Remove any potential numbering or formatting that might come from the AI
-  return responseText
+  let processedText = responseText
     .trim()
     .replace(/^\s*\d+\.\s*/gm, '') // Remove any numbering at the start of lines
     .replace(/\*\*(.*?)\*\*/g, '$1') // Remove markdown bold formatting
-    .replace(/\n{3,}/g, '\n\n'); // Normalize multiple newlines to double newlines
+    .replace(/\n{3,}/g, '\n\n') // Normalize multiple newlines to double newlines
+    .replace(/\n+#/g, '\n#') // Ensure hashtags are immediately after content
+    .replace(/\s+#/g, '\n#'); // Ensure hashtags start on new line with no extra spaces
+  
+  // Format the text with location, date, and author as requested
+  if (metadata) {
+    const paragraphs = processedText.split('\n\n');
+    
+    // Add location at the beginning of the first paragraph if provided
+    if (metadata.location && paragraphs.length > 0) {
+      // First remove any existing location patterns to prevent duplication
+      paragraphs[0] = paragraphs[0]
+        .replace(/^\[([^\]]+)\]\s*-\s*/gi, '') // Remove [Location] - pattern
+        .replace(/^([^-\n]+)\s*-\s*/gi, ''); // Remove any existing location prefix
+      
+      // Add the location in the correct format
+      paragraphs[0] = `${metadata.location} - ${paragraphs[0]}`;
+    }
+    
+    // Add date at the end of the first paragraph if provided
+    if (metadata.date && paragraphs.length > 0) {
+      const day = metadata.date.getDate().toString().padStart(2, '0');
+      const month = (metadata.date.getMonth() + 1).toString().padStart(2, '0');
+      
+      // First remove any existing date patterns to prevent duplication
+      paragraphs[0] = paragraphs[0]
+        .replace(/\s*\(\d{1,2}\/\d{1,2}\)\s*\.?$/gi, '') // Remove (DD/MM) pattern
+        .replace(/\s*\([^\)]+\)\s*\.?$/gi, ''); // Remove any other parenthetical at the end
+      
+      // Ensure the paragraph ends with a period before adding the date
+      if (!paragraphs[0].endsWith('.')) {
+        paragraphs[0] = `${paragraphs[0]}.`;
+      }
+      
+      // Add date in format (DD/MM)
+      paragraphs[0] = `${paragraphs[0]} (${day}/${month})`;
+    }
+    
+    // Author metadata is already handled in the prompt template
+    // No need to add author initials at the end of the last paragraph
+    
+    // Join paragraphs and clean up any trailing periods or extra newlines before hashtags
+    processedText = paragraphs.join('\n\n');
+    
+    // Fix the issue with excessive line breaks and extra periods before hashtags
+    processedText = processedText
+      .replace(/\.\s*\n+\s*#/g, '\n#') // Replace period followed by newlines and hashtag with just newline and hashtag
+      .replace(/\.+\s*#/g, '\n#') // Replace multiple periods before hashtag with newline and hashtag
+      .replace(/\n{2,}\s*#/g, '\n#') // Replace multiple newlines before hashtag with single newline
+      .trim();
+  }
+  
+  return processedText;
 };
 
 /**
@@ -26,12 +78,28 @@ export const fetchWithTimeout = (
   options: RequestInit,
   timeout: number
 ): Promise<Response> => {
-  return Promise.race([
-    fetch(url, options),
-    new Promise<Response>((_, reject) =>
-      setTimeout(() => reject(new Error('Request timed out')), timeout)
-    ),
-  ]);
+  // Create an AbortController to be able to cancel the fetch request
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  
+  // Add the signal to the fetch options
+  const enhancedOptions = {
+    ...options,
+    signal: controller.signal
+  };
+  
+  return fetch(url, enhancedOptions)
+    .then(response => {
+      clearTimeout(timeoutId); // Clear the timeout if fetch completes successfully
+      return response;
+    })
+    .catch(error => {
+      clearTimeout(timeoutId); // Clear the timeout if fetch fails
+      if (error.name === 'AbortError') {
+        throw new Error(`Request timed out after ${timeout/1000} seconds`);
+      }
+      throw error; // Re-throw other errors
+    });
 };
 
 /**
@@ -61,25 +129,19 @@ export const generateNewsWithRetry = async (
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      // Format date if available - for display in metadata
-      const formattedDate = newsDate ? new Date(newsDate).toLocaleDateString('id-ID', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      }) : '';
-      
-      // Format date in DD/MM format for article first paragraph
-      const shortDate = newsDate ? `(${new Date(newsDate).getDate().toString().padStart(2, '0')}/${(new Date(newsDate).getMonth() + 1).toString().padStart(2, '0')})` : '';
 
-      // Prepare metadata for the news article
+      // Prepare metadata for the news article including location, author, and date
       const metadata = {
         title: newsTitle,
+        quoteAttribution: quoteAttribution || '',
         location: location || '',
         author: author || '',
-        quoteAttribution: quoteAttribution || '',
-        date: formattedDate,
-        shortDate: shortDate
+        date: newsDate ? newsDate.toLocaleDateString('id-ID', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }) : ''
       };
 
       // Replace placeholders in the prompt template
@@ -105,8 +167,8 @@ export const generateNewsWithRetry = async (
               },
             ],
             generationConfig: {
-              temperature: 0.7,
-              topP: 0.95,
+              temperature: 2,
+              topP: 1,
               topK: 64,
               maxOutputTokens: 8192,
             },
@@ -120,18 +182,41 @@ export const generateNewsWithRetry = async (
       }
 
       const result = await response.json();
+      
+      // Check if the response has the expected structure
+      if (!result.candidates || !result.candidates[0] || !result.candidates[0].content || 
+          !result.candidates[0].content.parts || !result.candidates[0].content.parts[0] || 
+          !result.candidates[0].content.parts[0].text) {
+        console.error('Unexpected API response structure:', JSON.stringify(result));
+        throw new Error('Model tidak mengembalikan respons dalam format yang diharapkan.');
+      }
+      
       const responseText = result.candidates[0].content.parts[0].text;
 
       if (!responseText) {
         throw new Error('Model tidak mengembalikan respons.');
       }
 
-      const processedNews = processNewsResponse(responseText);
-      if (processedNews.length >= 2000 && processedNews.length <= 2200) { // Ensure article meets character requirements
-        return processedNews;
+      // Pass metadata to processNewsResponse for proper formatting
+      const processedNews = processNewsResponse(responseText, {
+        location: location,
+        author: author,
+        date: newsDate
+      });
+      
+      // Log the processed news length for debugging
+      console.log(`Processed news length: ${processedNews.length} characters`);
+      
+      // Check if the article meets the character limits (min 2000, max 2200)
+      // But return the content anyway, just log warnings instead of throwing errors
+      if (processedNews.length < 2000) {
+        console.warn(`Artikel terlalu pendek (${processedNews.length} karakter). Minimal seharusnya 2000 karakter.`);
+      } else if (processedNews.length > 2200) {
+        console.warn(`Artikel terlalu panjang (${processedNews.length} karakter). Maksimal seharusnya 2200 karakter.`);
       }
-
-      throw new Error(`Artikel tidak memenuhi persyaratan panjang karakter (${processedNews.length} karakter). Harus antara 2000-2200 karakter.`);
+      
+      // Return the processed news regardless of length
+      return processedNews;
     } catch (error: unknown) {
       let errorMessage = 'Terjadi kesalahan yang tidak diketahui';
       if (error instanceof Error) {

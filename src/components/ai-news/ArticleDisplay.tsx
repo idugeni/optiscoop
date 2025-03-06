@@ -1,10 +1,10 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { BarChart2, FileText, Copy, Sparkles } from 'lucide-react';
 
 interface ArticleDisplayProps {
   title: string;
@@ -14,7 +14,7 @@ interface ArticleDisplayProps {
   date?: Date;
 }
 
-export default function ArticleDisplay({ title, article, author, location, date }: ArticleDisplayProps) {
+export default function ArticleDisplay({ title, article }: ArticleDisplayProps) {
   // Function to count words in the article
   const countWords = (text: string) => {
     return text.split(/\s+/).filter(word => word.length > 0).length;
@@ -80,38 +80,52 @@ export default function ArticleDisplay({ title, article, author, location, date 
       </Card>
 
       {/* Separate card for statistics */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Informasi Konten</CardTitle>
+      <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg border-primary/10">
+        <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
+          <div className="flex items-center space-x-2">
+            <BarChart2 className="h-5 w-5 text-primary" />
+            <CardTitle className="text-lg">Informasi Konten</CardTitle>
+          </div>
+          <Badge variant="secondary" className="px-3 py-1">
+            <Sparkles className="h-3.5 w-3.5 mr-1" />
+            Statistik
+          </Badge>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            <div className="p-2 bg-muted rounded-md">
-              <p className="font-medium">Total Karakter (Berita):</p>
-              <p className="text-lg font-bold">{characterCount}</p>
+        <CardDescription className="px-6 text-sm text-muted-foreground">
+          Statistik artikel yang telah dibersihkan dari hashtag
+        </CardDescription>
+        <CardContent className="pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/10 transition-all duration-300 hover:shadow-md group">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  <FileText className="h-4 w-4 text-primary mr-2" />
+                  <p className="font-medium">Total Karakter</p>
+                </div>
+                <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => {
+                  navigator.clipboard.writeText(characterCount.toString());
+                  toast.success('Jumlah karakter disalin!');
+                }}>
+                  <Copy className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              <p className="text-2xl font-bold text-primary">{characterCount.toLocaleString()}</p>
             </div>
-            <div className="p-2 bg-muted rounded-md">
-              <p className="font-medium">Total Kata (Berita):</p>
-              <p className="text-lg font-bold">{wordCount}</p>
+            <div className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/10 transition-all duration-300 hover:shadow-md group">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  <FileText className="h-4 w-4 text-primary mr-2" />
+                  <p className="font-medium">Total Kata</p>
+                </div>
+                <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => {
+                  navigator.clipboard.writeText(wordCount.toString());
+                  toast.success('Jumlah kata disalin!');
+                }}>
+                  <Copy className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              <p className="text-2xl font-bold text-primary">{wordCount.toLocaleString()}</p>
             </div>
-            {author && (
-              <div className="p-2 bg-muted rounded-md">
-                <p className="font-medium">Penulis:</p>
-                <p className="text-lg font-bold">{author}</p>
-              </div>
-            )}
-            {location && (
-              <div className="p-2 bg-muted rounded-md">
-                <p className="font-medium">Lokasi:</p>
-                <p className="text-lg font-bold">{location}</p>
-              </div>
-            )}
-            {date && (
-              <div className="p-2 bg-muted rounded-md">
-                <p className="font-medium">Tanggal:</p>
-                <p className="text-lg font-bold">{format(date, 'dd MMMM yyyy', { locale: id })}</p>
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>
