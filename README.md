@@ -1,5 +1,7 @@
 # OptiScoop
 
+<div align="center">
+
 [![License](https://img.shields.io/github/license/idugeni/optiscoop)](LICENCE)
 [![Issues](https://img.shields.io/github/issues/idugeni/optiscoop)](https://github.com/idugeni/optiscoop/issues)
 [![Stars](https://img.shields.io/github/stars/idugeni/optiscoop)](https://github.com/idugeni/optiscoop/stargazers)
@@ -7,9 +9,13 @@
 [![Contributors](https://img.shields.io/github/contributors/idugeni/optiscoop)](https://github.com/idugeni/optiscoop/graphs/contributors)
 [![Last Commit](https://img.shields.io/github/last-commit/idugeni/optiscoop)](https://github.com/idugeni/optiscoop/commits/main)
 
+</div>
+
 OptiScoop is an AI-powered application designed to empower public relations professionals within Indonesia's Ministry of Immigration and Correctional sectors to produce optimized news and headlines.
 
-![OptiScoop](public/gemini.png)
+<div align="center">
+  <img src="public/gemini.png" alt="OptiScoop">
+</div>
 
 ## Overview
 
