@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Github, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -12,6 +13,8 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuContent
 } from "@/components/ui/navigation-menu";
 import {
   Sheet,
@@ -25,10 +28,17 @@ import {
 // Navigation links data
 const navigationLinks = [
   { href: "/", label: "Home" },
-  { href: "/ai-news", label: "AI News" },
-  { href: "/ai-title", label: "AI Title" },
+  {
+    label: "Tools",
+    items: [
+      { href: "/ai-title", label: "Title Generator" },
+      { href: "/ai-news", label: "News Generator" },
+      { href: "/ai-x", label: "X/Twitter Thread" },
+    ],
+  },
   { href: "/api-settings", label: "API Settings" },
   { href: "/panduan", label: "Panduan" },
+  { href: "/donation", label: "Donasi" },
 ];
 
 export function Header() {
@@ -42,7 +52,7 @@ export function Header() {
         <div className="flex items-center space-x-3">
           <Link href="/" className="flex items-center space-x-2 active:scale-95 transition-transform duration-300">
             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <div className="h-3 w-3 rounded-full bg-primary" />
+              <Image src="/gemini.png" alt="Gemini Logo" width={512} height={512} />
             </div>
             <span className="font-bold text-xl text-foreground">OptiScoop</span>
           </Link>
@@ -53,13 +63,34 @@ export function Header() {
           <NavigationMenu className="hidden md:flex">
             <NavigationMenuList>
               {navigationLinks.map((link) => (
-                <NavigationMenuItem key={link.href}>
-                  <NavigationMenuLink
-                    href={link.href}
-                    className="px-4 py-2 text-sm font-medium"
-                  >
-                    {link.label}
-                  </NavigationMenuLink>
+                <NavigationMenuItem key={link.href || link.label}>
+                  {link.items ? (
+                    <>
+                      <NavigationMenuTrigger className="px-4 py-2 text-sm font-medium">
+                        {link.label}
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <div className="w-48 p-2">
+                          {link.items.map((item) => (
+                            <NavigationMenuLink
+                              key={item.href}
+                              href={item.href}
+                              className="block px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground rounded-md"
+                            >
+                              {item.label}
+                            </NavigationMenuLink>
+                          ))}
+                        </div>
+                      </NavigationMenuContent>
+                    </>
+                  ) : (
+                    <NavigationMenuLink
+                      href={link.href}
+                      className="px-4 py-2 text-sm font-medium"
+                    >
+                      {link.label}
+                    </NavigationMenuLink>
+                  )}
                 </NavigationMenuItem>
               ))}
             </NavigationMenuList>
@@ -81,16 +112,34 @@ export function Header() {
                   <SheetTitle>Menu</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-4 py-4">
-                  {navigationLinks.map((link) => (
-                    <SheetClose asChild key={link.href}>
-                      <Link 
-                        href={link.href}
-                        className="px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
-                      >
-                        {link.label}
-                      </Link>
-                    </SheetClose>
-                  ))}
+                  {navigationLinks.map((link) => 
+                    link.items ? (
+                      <div key={link.label}>
+                        <div className="px-4 py-2 text-sm font-medium text-muted-foreground">
+                          {link.label}
+                        </div>
+                        {link.items.map((item) => (
+                          <SheetClose asChild key={item.href}>
+                            <Link
+                              href={item.href}
+                              className="block px-8 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
+                            >
+                              {item.label}
+                            </Link>
+                          </SheetClose>
+                        ))}
+                      </div>
+                    ) : (
+                      <SheetClose asChild key={link.href}>
+                        <Link 
+                          href={link.href}
+                          className="px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      </SheetClose>
+                    )
+                  )}
                 </div>
               </SheetContent>
             </Sheet>

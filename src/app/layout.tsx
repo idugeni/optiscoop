@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
+import { BackToTop } from "@/components/ui/back-to-top"
 import structuredData from "../../public/structured-data.json"
 
 export const metadata: Metadata = {
@@ -41,7 +42,8 @@ export default function RootLayout({
                 {children}
               </main>
               <Footer />
-              <Toaster />  
+              <Toaster />
+              <BackToTop />
             </div>
           </ThemeProvider>
         </body>

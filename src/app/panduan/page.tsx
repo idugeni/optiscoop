@@ -45,10 +45,10 @@ export default function PanduanPage() {
                   <h3 className="text-lg font-semibold mb-2">Langkah 1: Buat Akun Google AI Studio</h3>
                   <p className="mb-2">Kunjungi situs resmi Google AI Studio untuk membuat akun atau masuk dengan akun Google Anda.</p>
                   <Button variant="outline" size="sm" className="gap-1" asChild>
-                    <a href="https://ai.google.dev/" target="_blank" rel="noopener noreferrer">
+                    <Link href="https://ai.google.dev/" target="_blank">
                       Kunjungi Google AI Studio
                       <ExternalLink className="h-3 w-3" />
-                    </a>
+                    </Link>
                   </Button>
                 </div>
 

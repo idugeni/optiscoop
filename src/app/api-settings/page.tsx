@@ -12,6 +12,7 @@ import { Save, Trash2, Eye, EyeOff } from 'lucide-react';
 
 // Import models from JSON file
 import modelsData from '@/data/models/gemini-models.json';
+import Link from 'next/link';
 const AVAILABLE_MODELS = modelsData.models;
 
 export default function ApiSettingsPage() {
@@ -133,14 +134,14 @@ export default function ApiSettingsPage() {
               </div>
               <p className="text-sm text-muted-foreground">
                 API key diperlukan untuk mengakses layanan Gemini. Dapatkan API key di
-                <a 
+                <Link 
                   href="https://ai.google.dev/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-primary hover:underline ml-1"
                 >
                   Google AI Studio
-                </a>
+                </Link>
               </p>
             </div>
             

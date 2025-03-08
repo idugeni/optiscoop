@@ -3,12 +3,14 @@
 import { useLayoutEffect } from "react";
 import { metadata } from "@/lib/Metadata";
 
-interface UseMetadataProps {
-  title?: string;
-  description?: string;
+interface MetadataParams {
+  title: string;
+  description: string;
 }
 
-export function useMetadata(p0: string, p1: string, { title, description }: UseMetadataProps = {}): void {
+export type { MetadataParams };
+
+export function useMetadata(title: string, description: string): void {
   useLayoutEffect(() => {
     let finalTitle: string = "";
     if (title) {

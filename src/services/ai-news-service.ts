@@ -1,4 +1,5 @@
 import instructionsData from '@/data/ai-news/instructions.json';
+import { getRecommendedTimeout } from '@/config/api-timeouts';
 
 /**
  * Process the raw response text from the AI model and format it as a news article
@@ -22,9 +23,6 @@ export const processNewsResponse = (responseText: string, metadata?: { location?
   
   // Split content into paragraphs and filter out empty ones
   const contentParagraphs = mainContent.split('\n\n').filter(p => p.trim().length > 0);
-  
-  // Log paragraph count for debugging
-  console.log(`Initial paragraph count: ${contentParagraphs.length}`);
   
   // STRICT ENFORCEMENT: Ensure we have EXACTLY 5-6 paragraphs
   
@@ -253,19 +251,15 @@ export const processNewsResponse = (responseText: string, metadata?: { location?
   
   // Final verification of paragraph count
   const finalParagraphs = processedText.split('\n\n').filter(p => p.trim().length > 0 && !p.trim().startsWith('#'));
-  console.log(`Final paragraph count: ${finalParagraphs.length}`);
-  console.log(`Final character count: ${processedText.length}`);
   
-  // Log warning if we still don't have 5-6 paragraphs
   if (finalParagraphs.length < 5 || finalParagraphs.length > 6) {
-    console.warn(`WARNING: Article has ${finalParagraphs.length} paragraphs, should be 5-6 paragraphs`);
+    // Article should have 5-6 paragraphs
   }
   
-  // Log warning if character count is outside limits
   if (processedText.length < 2000) {
-    console.warn(`WARNING: Article is too short (${processedText.length} characters), should be at least 2000 characters`);
+    // Article should be at least 2000 characters
   } else if (processedText.length > 2200) {
-    console.warn(`WARNING: Article is too long (${processedText.length} characters), should be at most 2200 characters`);
+    // Article should be at most 2200 characters
   }
   
   return processedText;
@@ -309,9 +303,13 @@ export const fetchWithTimeout = (
 
 /**
  * Generate news article with retry mechanism
- * @param newsTitle - User's input news title
+ * @param newsTitle - Title of the news article
  * @param apiKey - API key for the AI service
  * @param selectedModel - Selected AI model ID
+ * @param location - Optional location for the news article
+ * @param author - Optional author name
+ * @param quoteAttribution - Optional quote attribution
+ * @param newsDate - Optional date for the news article
  * @param maxAttempts - Maximum number of retry attempts
  * @returns Promise with generated news article text
  */
@@ -325,7 +323,8 @@ export const generateNewsWithRetry = async (
   newsDate?: Date,
   maxAttempts = 3
 ): Promise<string> => {
-  const timeout = 60000;
+  // Use the recommended timeout based on the model and operation type
+  const timeout = getRecommendedTimeout(selectedModel, 'NEWS_GENERATION');
   const API_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent`;
 
   if (!apiKey) {
@@ -334,27 +333,34 @@ export const generateNewsWithRetry = async (
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
+      // Prepare metadata for the article
+      let metadata = '';
+      if (location) metadata += `- Lokasi: ${location}\n`;
+      if (author) metadata += `- Penulis: ${author}\n`;
+      if (quoteAttribution) metadata += `- Narasumber: ${quoteAttribution}\n`;
+      if (newsDate) {
+        const formattedDate = `${newsDate.getDate().toString().padStart(2, '0')}/${(newsDate.getMonth() + 1).toString().padStart(2, '0')}/${newsDate.getFullYear()}`;
+        metadata += `- Tanggal: ${formattedDate}\n`;
+      }
+      
+      // If no metadata provided, add a note
+      if (!metadata) {
+        metadata = '- Tidak ada metadata tambahan';
+      }
 
-      // Prepare metadata for the news article including location, author, and date
-      const metadata = {
-        title: newsTitle,
-        quoteAttribution: quoteAttribution || '',
-        location: location || '',
-        author: author || '',
-        date: newsDate ? newsDate.toLocaleDateString('id-ID', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        }) : ''
-      };
+      // Prepare hashtags
+      const hashtags = '#kemenimipas #guardandguide #infoimipas #pemasyarakatan';
+
+      // Character limit for the article
+      const characterLimit = '2200';
 
       // Replace placeholders in the prompt template
       const filledPrompt = instructionsData.promptTemplate
         .replace('${systemInstruction}', instructionsData.systemInstruction)
         .replace('${userInput}', newsTitle)
-        .replace('${metadata}', JSON.stringify(metadata))
-        .replace('${hashtags}', '#kemenimipas #guardandguide #infoimipas #pemasyarakatan');
+        .replace('${metadata}', metadata)
+        .replace('${characterLimit}', characterLimit)
+        .replace('${hashtags}', hashtags);
 
       const response = await fetchWithTimeout(
         `${API_ENDPOINT}?key=${apiKey}`,
@@ -371,8 +377,8 @@ export const generateNewsWithRetry = async (
               },
             ],
             generationConfig: {
-              temperature: 1.2,
-              topP: 0.98,
+              temperature: 1,
+              topP: 0.95,
               topK: 64,
               maxOutputTokens: 8192,
             },
@@ -386,42 +392,20 @@ export const generateNewsWithRetry = async (
       }
 
       const result = await response.json();
-      
-      // Check if the response has the expected structure
-      if (!result.candidates || !result.candidates[0] || !result.candidates[0].content || 
-          !result.candidates[0].content.parts || !result.candidates[0].content.parts[0] || 
-          !result.candidates[0].content.parts[0].text) {
-        console.error('Unexpected API response structure:', JSON.stringify(result));
-        throw new Error('Model tidak mengembalikan respons dalam format yang diharapkan.');
-      }
-      
       const responseText = result.candidates[0].content.parts[0].text;
 
       if (!responseText) {
         throw new Error('Model tidak mengembalikan respons.');
       }
 
-      // Pass metadata to processNewsResponse for proper formatting
-      const processedNews = processNewsResponse(responseText, {
-        location: location,
-        author: author,
-        date: newsDate
-      });
-      
-      // Log the processed news length for debugging
-      console.log(`Processed news length: ${processedNews.length} characters`);
-      
-      // Check if the article meets the character limits (min 2000, max 2200)
-      // Log warnings for debugging purposes
-      if (processedNews.length < 2000) {
-        console.warn(`Artikel terlalu pendek (${processedNews.length} karakter). Minimal seharusnya 2000 karakter.`);
-      } else if (processedNews.length > 2200) {
-        console.warn(`Artikel terlalu panjang (${processedNews.length} karakter). Maksimal seharusnya 2200 karakter.`);
-        // This should not happen anymore since we're enforcing the limit in processNewsResponse
-      }
-      
-      // Return the processed news (now guaranteed to be within character limits)
-      return processedNews;
+      // Process the response to ensure it meets the requirements
+      const metadataObj: { location?: string; author?: string; date?: Date } = {};
+      if (location) metadataObj.location = location;
+      if (author) metadataObj.author = author;
+      if (newsDate) metadataObj.date = newsDate;
+
+      const processedArticle = processNewsResponse(responseText, metadataObj);
+      return processedArticle;
     } catch (error: unknown) {
       let errorMessage = 'Terjadi kesalahan yang tidak diketahui';
       if (error instanceof Error) {

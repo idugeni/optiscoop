@@ -68,8 +68,7 @@ export default function AiTitle() {
           2
         )} detik, silakan periksa dan jika kurang sesuai, silakan ulangi prosesnya.`
       );
-    } catch (error) {
-      console.error(error);
+    } catch {
       setAlertInfo(
         'Terjadi kesalahan saat membuat judul. Mohon periksa koneksi internet Anda dan pastikan API key valid, atau coba lagi dalam beberapa saat.'
       );

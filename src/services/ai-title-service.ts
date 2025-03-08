@@ -1,4 +1,5 @@
 import instructionsData from '@/data/ai-title/instructions.json';
+import { getRecommendedTimeout } from '@/config/api-timeouts';
 
 /**
  * Process the raw response text from the AI model and extract properly formatted titles
@@ -76,7 +77,8 @@ export const generateTitlesWithRetry = async (
   titleCount = 10,
   maxAttempts = 3
 ): Promise<string[]> => {
-  const timeout = 60000;
+  // Use the recommended timeout based on the model and operation type
+  const timeout = getRecommendedTimeout(selectedModel, 'TITLE_GENERATION');
   const API_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent`;
 
   if (!apiKey) {

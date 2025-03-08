@@ -31,10 +31,10 @@ import { AlertCircle } from 'lucide-react';
 import { useMetadata } from "@/hooks/useMetadata";
 
 export default function NotFound() {
-    useMetadata({
-        title: "Page Not Found",
-        description: "The page you are looking for does not exist.",
-    });
+    useMetadata(
+        "Page Not Found",
+        "The page you are looking for does not exist."
+    );
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8">
       <Card className="w-full max-w-3xl">

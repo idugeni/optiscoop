@@ -13,10 +13,10 @@ import { AlertCircle, ServerOff } from 'lucide-react';
 import { useMetadata } from "@/hooks/useMetadata";
 
 export default function ServiceUnavailable() {
-  useMetadata({
-    title: "Service Unavailable",
-    description: "The service you are trying to access is currently unavailable.",
-  });
+  useMetadata(
+    "Service Unavailable",
+    "The service you are trying to access is currently unavailable."
+  );
   
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8">

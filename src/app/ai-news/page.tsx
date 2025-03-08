@@ -22,8 +22,7 @@ export default function AiNews() {
   const [newsDate, setNewsDate] = useState<Date | undefined>(new Date());
   const [loading, setLoading] = useState(false);
   const [article, setArticle] = useState('');
-  const [alertInfo, setAlertInfo] = useState('');
-  const [alertSuccess, setAlertSuccess] = useState('');
+
   const [apiKey, setApiKey] = useState('');
   const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash-thinking-exp-01-21');
 
@@ -54,30 +53,17 @@ export default function AiNews() {
     
     setLoading(true);
     setArticle('');
-    setAlertSuccess('');
-    setAlertInfo(
-      'Sedang memproses permintaan Anda, ini mungkin memerlukan waktu beberapa saat...'
-    );
+    toast.info('Sedang memproses permintaan Anda, ini mungkin memerlukan waktu beberapa saat...');
 
     const startTime = Date.now();
 
     try {
       const generatedArticle = await generateNewsWithRetry(title, apiKey, selectedModel, location, author, quoteAttribution, newsDate);
       setArticle(generatedArticle);
-      setAlertInfo('');
-
       const processDuration = (Date.now() - startTime) / 1000;
-      setAlertSuccess(
-        `Artikel berhasil dibuat dalam ${processDuration.toFixed(
-          2
-        )} detik, silakan periksa dan jika kurang sesuai, silakan ulangi prosesnya.`
-      );
-    } catch (error) {
-      console.error(error);
-      setAlertInfo(
-        'Terjadi kesalahan saat membuat artikel. Mohon periksa koneksi internet Anda dan pastikan API key valid, atau coba lagi dalam beberapa saat.'
-      );
-      toast.error('Gagal membuat artikel');
+      toast.success(`Artikel berhasil dibuat dalam ${processDuration.toFixed(2)} detik, silakan periksa dan jika kurang sesuai, silakan ulangi prosesnya.`);
+    } catch {
+      toast.error('Terjadi kesalahan saat membuat artikel. Mohon periksa koneksi internet Anda dan pastikan API key valid, atau coba lagi dalam beberapa saat.');
     }
 
     setLoading(false);
@@ -122,11 +108,8 @@ export default function AiNews() {
                 setNewsDate={setNewsDate}
                 loading={loading}
                 article={article}
-                alertInfo={alertInfo}
-                alertSuccess={alertSuccess}
                 apiKey={apiKey}
-                generateArticle={generateArticle}
-              />
+                generateArticle={generateArticle} alertInfo={''} alertSuccess={''}              />
             </CardContent>
           </Card>
         </div>

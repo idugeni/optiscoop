@@ -1,6 +1,6 @@
 'use client';
 
-import { Sparkles, AlertCircle, CheckCircle, Info, CalendarIcon } from 'lucide-react';
+import { Sparkles, AlertCircle, CheckCircle, Info, CalendarIcon, Newspaper, MapPin, User, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -62,7 +62,10 @@ export default function NewsGeneratorForm({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="title">Judul Berita</Label>
+        <Label htmlFor="title" className="flex items-center gap-2">
+          <Newspaper className="h-4 w-4" />
+          Judul Berita
+        </Label>
         <Input
           id="title"
           placeholder="Masukkan judul berita yang ingin dibuat artikelnya"
@@ -77,7 +80,10 @@ export default function NewsGeneratorForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="location">Lokasi Berita</Label>
+        <Label htmlFor="location" className="flex items-center gap-2">
+          <MapPin className="h-4 w-4" />
+          Lokasi Berita
+        </Label>
         <Input
           id="location"
           placeholder="Masukkan lokasi berita (contoh: Jakarta)"
@@ -91,7 +97,10 @@ export default function NewsGeneratorForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="author">Pembuat Berita</Label>
+        <Label htmlFor="author" className="flex items-center gap-2">
+          <User className="h-4 w-4" />
+          Pembuat Berita
+        </Label>
         <Input
           id="author"
           placeholder="Masukkan nama pembuat berita"
@@ -105,7 +114,10 @@ export default function NewsGeneratorForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="quoteAttribution">Nama Pembuat Kutipan</Label>
+        <Label htmlFor="quoteAttribution" className="flex items-center gap-2">
+          <Quote className="h-4 w-4" />
+          Nama Pembuat Kutipan
+        </Label>
         <Input
           id="quoteAttribution"
           placeholder="Masukkan nama pembuat kutipan"
@@ -119,7 +131,10 @@ export default function NewsGeneratorForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="newsDate" className="font-medium">Tanggal Berita</Label>
+        <Label htmlFor="newsDate" className="flex items-center gap-2 font-medium">
+          <CalendarIcon className="h-4 w-4" />
+          Tanggal Berita
+        </Label>
         <Popover open={isOpen} onOpenChange={setIsOpen}>
           <PopoverTrigger asChild>
             <Button
