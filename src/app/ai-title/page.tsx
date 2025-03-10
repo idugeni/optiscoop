@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useMetadata } from '@/hooks/useMetadata';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -14,7 +13,11 @@ import TitleGeneratorForm from '@/components/ai-title/TitleGeneratorForm';
 import { generateTitlesWithRetry } from '@/services/ai-title-service';
 
 export default function AiTitle() {
-  useMetadata('Pembuat Judul AI', 'Dapatkan judul artikel yang menarik dengan AI');
+  useEffect(() => {
+    document.title = 'Pembuat Judul AI - OptiScoop';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', 'Dapatkan judul artikel yang menarik dengan AI');
+  }, []);
 
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
