@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Trophy, User, Award } from 'lucide-react';
+import { User, Award } from 'lucide-react';
 import { Donor } from '@/data/donation/donors';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -54,11 +54,6 @@ export default function DonorsList({ donors }: DonorsListProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-center gap-2 mb-2">
-        <Trophy className="h-5 w-5 text-primary" />
-        <h3 className="text-lg font-semibold">Terima Kasih Kepada Donatur Kami</h3>
-      </div>
-      
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {sortedDonors.map((donor, index) => (
           <Card key={index} className="overflow-hidden transition-all duration-300 hover:shadow-md">

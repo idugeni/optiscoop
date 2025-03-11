@@ -7,10 +7,10 @@ import Link from 'next/link';
 import { Settings } from 'lucide-react';
 
 // Import custom components
-import TitleGeneratorForm from '@/components/ai-title/TitleGeneratorForm';
+import TitleGeneratorForm from '@/components/title/TitleGeneratorForm';
 
 // Import services
-import { generateTitlesWithRetry } from '@/services/ai-title-service';
+import { generateTitlesWithRetry } from '@/services/title';
 
 export default function AiTitle() {
   useEffect(() => {
@@ -22,8 +22,6 @@ export default function AiTitle() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [titles, setTitles] = useState<string[]>([]);
-  const [alertInfo, setAlertInfo] = useState('');
-  const [alertSuccess, setAlertSuccess] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash-thinking-exp-01-21');
   const [titleCount, setTitleCount] = useState(5); // Default to 5 titles
@@ -53,29 +51,29 @@ export default function AiTitle() {
     
     setLoading(true);
     setTitles([]);
-    setAlertSuccess('');
-    setAlertInfo(
-      'Sedang memproses permintaan Anda, ini mungkin memerlukan waktu beberapa saat...'
-    );
+    toast.info('Sedang memproses permintaan Anda, ini mungkin memerlukan waktu beberapa saat...');
 
     const startTime = Date.now();
 
     try {
+      // Add a more detailed message about the process starting
+      console.log(`Starting title generation with model: ${selectedModel}, requesting ${titleCount} titles`);
+      
       const generatedTitles = await generateTitlesWithRetry(input, apiKey, selectedModel, titleCount);
       setTitles(generatedTitles);
-      setAlertInfo('');
 
       const processDuration = (Date.now() - startTime) / 1000;
-      setAlertSuccess(
-        `Judul berhasil dibuat dalam ${processDuration.toFixed(
-          2
-        )} detik, silakan periksa dan jika kurang sesuai, silakan ulangi prosesnya.`
-      );
-    } catch {
-      setAlertInfo(
-        'Terjadi kesalahan saat membuat judul. Mohon periksa koneksi internet Anda dan pastikan API key valid, atau coba lagi dalam beberapa saat.'
-      );
-      toast.error('Gagal membuat judul');
+      toast.success(`Judul berhasil dibuat dalam ${processDuration.toFixed(2)} detik, silakan periksa dan jika kurang sesuai, silakan ulangi prosesnya.`);
+    } catch (error) {
+      // Improve error handling with more specific error messages
+      let errorMessage = 'Terjadi kesalahan saat membuat judul.';
+      
+      if (error instanceof Error) {
+        console.error('Title generation error:', error.message);
+        errorMessage = `${errorMessage} Detail: ${error.message}`;
+      }
+      
+      toast.error(`${errorMessage} Mohon periksa koneksi internet Anda dan pastikan API key valid, atau coba lagi dalam beberapa saat.`);
     }
 
     setLoading(false);
@@ -91,7 +89,7 @@ export default function AiTitle() {
 
         <div className="flex justify-end">
           <Button variant="outline" size="sm" asChild>
-            <Link href="/api-settings">
+            <Link href="/settings">
               <Settings className="mr-2 h-4 w-4" />
               Pengaturan API
             </Link>
@@ -112,8 +110,6 @@ export default function AiTitle() {
                   setInput={setInput}
                   loading={loading}
                   titles={titles}
-                  alertInfo={alertInfo}
-                  alertSuccess={alertSuccess}
                   apiKey={apiKey}
                   generateTitles={generateTitles}
                   titleCount={titleCount}

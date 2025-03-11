@@ -4,28 +4,28 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { generateNewsWithRetry } from '@/services/ai-news-service';
+import { generateNewsWithRetry } from '@/services/news';
 import { useMetadata } from '@/hooks/useMetadata';
 import Link from 'next/link';
 import { Settings } from 'lucide-react';
 
 // Import custom components
-import NewsGeneratorForm from '@/components/ai-news/NewsGeneratorForm';
+import NewsGeneratorForm from '@/components/news/NewsGeneratorForm';
 
 export default function AiNews() {
   useMetadata('Pembuat Berita AI', 'Dapatkan artikel berita yang informatif dengan AI');
 
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
-  const [author, setAuthor] = useState('');
   const [quoteAttribution, setQuoteAttribution] = useState('');
+  const [quotePosition, setQuotePosition] = useState('');
+  const [institution, setInstitution] = useState('');
   const [newsDate, setNewsDate] = useState<Date | undefined>(new Date());
   const [loading, setLoading] = useState(false);
   const [article, setArticle] = useState('');
 
   const [apiKey, setApiKey] = useState('');
   const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash-thinking-exp-01-21');
-
 
   useEffect(() => {
     const savedApiKey = sessionStorage.getItem('gemini_api_key');
@@ -58,7 +58,7 @@ export default function AiNews() {
     const startTime = Date.now();
 
     try {
-      const generatedArticle = await generateNewsWithRetry(title, apiKey, selectedModel, location, author, quoteAttribution, newsDate);
+      const generatedArticle = await generateNewsWithRetry(title, apiKey, selectedModel, location, quoteAttribution, newsDate, quotePosition, institution);
       setArticle(generatedArticle);
       const processDuration = (Date.now() - startTime) / 1000;
       toast.success(`Artikel berhasil dibuat dalam ${processDuration.toFixed(2)} detik, silakan periksa dan jika kurang sesuai, silakan ulangi prosesnya.`);
@@ -79,7 +79,7 @@ export default function AiNews() {
 
         <div className="flex justify-end">
           <Button variant="outline" size="sm" asChild>
-            <Link href="/api-settings">
+            <Link href="/settings">
               <Settings className="mr-2 h-4 w-4" />
               Pengaturan API
             </Link>
@@ -100,16 +100,21 @@ export default function AiNews() {
                 setTitle={setTitle}
                 location={location}
                 setLocation={setLocation}
-                author={author}
-                setAuthor={setAuthor}
                 quoteAttribution={quoteAttribution}
                 setQuoteAttribution={setQuoteAttribution}
+                quotePosition={quotePosition}
+                setQuotePosition={setQuotePosition}
+                institution={institution}
+                setInstitution={setInstitution}
                 newsDate={newsDate}
                 setNewsDate={setNewsDate}
                 loading={loading}
                 article={article}
                 apiKey={apiKey}
-                generateArticle={generateArticle} alertInfo={''} alertSuccess={''}              />
+                generateArticle={generateArticle}
+                alertInfo={''}
+                alertSuccess={''}
+              />
             </CardContent>
           </Card>
         </div>

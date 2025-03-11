@@ -1,6 +1,6 @@
 'use client';
 
-import { Sparkles, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { Sparkles, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -8,15 +8,13 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import TitleItem from '@/components/ai-title/TitleItem';
+import TitleItem from '@/components/title/TitleItem';
 
 interface TitleGeneratorFormProps {
   input: string;
   setInput: (value: string) => void;
   loading: boolean;
   titles: string[];
-  alertInfo: string;
-  alertSuccess: string;
   apiKey: string;
   generateTitles: () => Promise<void>;
   titleCount: number;
@@ -28,8 +26,6 @@ export default function TitleGeneratorForm({
   setInput,
   loading,
   titles,
-  alertInfo,
-  alertSuccess,
   apiKey,
   generateTitles,
   titleCount,
@@ -48,8 +44,8 @@ export default function TitleGeneratorForm({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
+    <div className="space-y-6">
+      <div className="space-y-3 mb-4">
         <Label htmlFor="description">Deskripsi</Label>
         <Textarea
           id="description"
@@ -65,7 +61,7 @@ export default function TitleGeneratorForm({
         </p>
       </div>
       
-      <div className="space-y-2">
+      <div className="space-y-3 mb-4">
         <Label htmlFor="titleCount">Jumlah Judul</Label>
         <Select
           value={titleCount.toString()}
@@ -93,31 +89,33 @@ export default function TitleGeneratorForm({
         </p>
       </div>
       
-      <Button
-        className="w-full"
-        onClick={generateTitles}
-        disabled={loading || !apiKey}
-      >
-        {loading ? (
-          <>
-            <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
-            Sedang membuat judul...
-          </>
-        ) : titles.length > 0 ? (
-          <>
-            <Sparkles className="mr-2 h-4 w-4" />
-            Hasilkan Lagi
-          </>
-        ) : (
-          <>
-            <Sparkles className="mr-2 h-4 w-4" />
-            Buat Judul
-          </>
-        )}
-      </Button>
+      <div className="mt-6 mb-4">
+        <Button
+          className="w-full"
+          onClick={generateTitles}
+          disabled={loading || !apiKey}
+        >
+          {loading ? (
+            <>
+              <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
+              Sedang membuat judul...
+            </>
+          ) : titles.length > 0 ? (
+            <>
+              <Sparkles className="mr-2 h-4 w-4" />
+              Hasilkan Lagi
+            </>
+          ) : (
+            <>
+              <Sparkles className="mr-2 h-4 w-4" />
+              Buat Judul
+            </>
+          )}
+        </Button>
+      </div>
       
       {!apiKey && (
-        <Alert variant="destructive">
+        <Alert variant="destructive" className="mt-4 mb-4">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             API key diperlukan. Silakan masukkan API key di tab Pengaturan.
@@ -125,26 +123,8 @@ export default function TitleGeneratorForm({
         </Alert>
       )}
       
-      {alertInfo && (
-        <Alert>
-          <Info className="h-4 w-4" />
-          <AlertDescription>
-            {alertInfo}
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      {alertSuccess && (
-        <Alert variant="default">
-          <CheckCircle className="h-4 w-4" />
-          <AlertDescription>
-            {alertSuccess}
-          </AlertDescription>
-        </Alert>
-      )}
-      
       {titles.length > 0 && (
-        <div className="mt-6">
+        <div className="mt-8">
           <Table>
             <TableCaption>Judul yang dihasilkan oleh AI</TableCaption>
             <TableHeader>

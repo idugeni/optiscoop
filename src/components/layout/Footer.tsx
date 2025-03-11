@@ -9,15 +9,15 @@ import { useEffect } from "react";
 // Quick Links navigation items
 const QUICK_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/ai-title", label: "AI Title Generator" },
-  { href: "/ai-news", label: "AI News Generator" },
-  { href: "/ai-x", label: "X/Twitter Thread Converter" },
+  { href: "/title", label: "Title Generator" },
+  { href: "/news", label: "News Generator" },
+  { href: "/x", label: "X/Twitter Thread" },
   { href: "/panduan", label: "User Guide" },
 ];
 
 // Resource Links
 const RESOURCE_LINKS = [
-  { href: "/api-settings", label: "API Settings" },
+  { href: "/settings", label: "Settings" },
   { href: "/donation", label: "Support Us" },
   { href: "https://github.com/idugeni/optiscoop", label: "Documentation" },
 ];

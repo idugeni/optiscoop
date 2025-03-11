@@ -1,6 +1,6 @@
 {
   "name": "optiscoop",
-  "version": "1.0.0",
+  "version": "1.6.8",
   "description": "OptiScoop empowers public relations professionals within Indonesia's Ministry of Immigration and Correctional sectors to produce optimized news and headlines.",
   "repository": {
     "type": "git",
@@ -33,8 +33,8 @@
     "embla-carousel-react": "^8.5.2",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.479.0",
-    "next": "^15.2.1",
-    "next-themes": "^0.4.5",
+    "next": "^15.2.2",
+    "next-themes": "^0.4.6",
     "radix-ui": "^1.1.3",
     "react": "^19.0.0",
     "react-day-picker": "^9.6.1",
@@ -51,14 +51,14 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4.0.12",
+    "@tailwindcss/postcss": "^4.0.13",
     "@types/node": "^22.13.10",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9.22.0",
-    "eslint-config-next": "^15.2.1",
+    "eslint-config-next": "^15.2.2",
     "postcss": "^8",
-    "tailwindcss": "^4.0.12",
+    "tailwindcss": "^4.0.13",
     "turbo": "^2.4.4",
     "typescript": "^5"
   },

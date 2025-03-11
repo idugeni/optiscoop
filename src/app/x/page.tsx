@@ -9,8 +9,8 @@ import { Settings } from 'lucide-react';
 import Link from 'next/link';
 
 // Import custom components
-import ThreadGeneratorForm from '@/components/ai-x/ThreadGeneratorForm';
-import TweetDisplay from '@/components/ai-x/TweetDisplay';
+import ThreadGeneratorForm from '@/components/x/ThreadGeneratorForm';
+import TweetDisplay from '@/components/x/TweetDisplay';
 
 export default function AiX() {
   useMetadata('Konversi Berita ke X/Twitter', 'Konversi artikel berita menjadi thread X/Twitter yang optimal');
@@ -93,7 +93,7 @@ export default function AiX() {
 
         <div className="flex justify-end">
           <Button variant="outline" size="sm" asChild>
-            <Link href="/api-settings">
+            <Link href="/settings">
               <Settings className="mr-2 h-4 w-4" />
               Pengaturan API
             </Link>

@@ -7,19 +7,19 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://optiscoop.vercel.app/ai-news</loc>
+    <loc>https://optiscoop.vercel.app/news</loc>
     <lastmod>2024-06-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://optiscoop.vercel.app/ai-title</loc>
+    <loc>https://optiscoop.vercel.app/title</loc>
     <lastmod>2024-06-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://optiscoop.vercel.app/api-settings</loc>
+    <loc>https://optiscoop.vercel.app/settings</loc>
     <lastmod>2024-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
