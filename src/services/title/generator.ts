@@ -28,6 +28,11 @@ export const generateTitlesWithRetry = async (
     throw new Error('API key is required');
   }
 
+  // Validate title count to ensure it's within reasonable limits
+  if (titleCount < 1 || titleCount > 10) {
+    titleCount = 5;
+  }
+
   // Use the retryWithConsistentTimeout utility to maintain the same timeout for each attempt
   // This makes it seem like the first attempt gets extended time
   return retryWithConsistentTimeout(
@@ -37,6 +42,8 @@ export const generateTitlesWithRetry = async (
       
       // Use the prompt template from instructions.ts
       const filledPrompt = getPromptTemplate(titleCount, description);
+      
+      // Production mode - no debug logging
       
       const response = await fetchWithTimeout(
         `${API_ENDPOINT}?key=${apiKey}`,
@@ -53,13 +60,30 @@ export const generateTitlesWithRetry = async (
               },
             ],
             generationConfig: {
-              temperature: 1.2, // Lower temperature for more focused outputs
-              topP: 0.95, // Higher topP for better quality
-              topK: 64, // Increased topK for more diverse options
-              maxOutputTokens: 65536, // Increased to ensure complete response
-              stopSequences: ["\n\n"], // Add stop sequence to better control output
-              candidateCount: 1, // Reduced to 1 to avoid split responses
+              temperature: 1.8, // Increased temperature for more unique and creative outputs
+              topP: 0.98, // Increased topP for more diverse generation
+              topK: 60, // Increased topK for better diversity
+              maxOutputTokens: 8192, // Reasonable size for title generation
+              candidateCount: 1, // Keep at 1 to avoid split responses
             },
+            safetySettings: [
+              {
+                category: "HARM_CATEGORY_HARASSMENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_HATE_SPEECH",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              }
+            ]
           }),
         },
         timeout
@@ -73,9 +97,24 @@ export const generateTitlesWithRetry = async (
 
       const result = await response.json();
       
+      // Production mode - no debug logging
+      
       // Check if the response has the expected structure
       if (!result.candidates || result.candidates.length === 0) {
-        throw new Error('Respons API tidak valid atau tidak lengkap.');
+        // Check for safety filter or other specific error conditions
+        if (result.promptFeedback && result.promptFeedback.blockReason) {
+          throw new Error(`Konten diblokir oleh filter keamanan: ${result.promptFeedback.blockReason}. Mohon ubah deskripsi Anda.`);
+        } else if (result.error) {
+          // Handle API-specific error messages
+          throw new Error(`Error API: ${result.error.message || result.error.code || 'Unknown error'}`);
+        } else if (result.usageMetadata && !result.candidates) {
+          // Handle case where API returns only usage metadata without content
+          // This can happen when the model processes the request but doesn't generate any output
+          throw new Error('API memproses permintaan tetapi tidak menghasilkan konten. Coba gunakan deskripsi yang lebih jelas, spesifik, dan hindari konten yang mungkin diblokir oleh filter keamanan.');
+        } else {
+          // Generic error for invalid response structure
+          throw new Error('Respons API tidak valid atau tidak lengkap. Coba gunakan deskripsi yang lebih spesifik.');
+        }
       }
       
       // Combine text from all candidates to handle split responses
@@ -99,6 +138,6 @@ export const generateTitlesWithRetry = async (
       return titles;
     },
     maxAttempts,
-    1000  // 1 second delay between retry attempts
+    3000  // 3 second delay between retry attempts to give API more time to recover
   );
 };

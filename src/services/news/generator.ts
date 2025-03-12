@@ -81,7 +81,27 @@ newsTitle: string, apiKey: string, selectedModel: string, location?: string, quo
               topP: 0.98, // Increased topP for more diverse outputs
               topK: 64,
               maxOutputTokens: 65536, // Increased to ensure complete article generation
+              stopSequences: ["##", "---", "###"], // Stop sequences to control generation
+              candidateCount: 1, // Generate multiple candidates for better selection
             },
+            safetySettings: [
+              {
+                category: "HARM_CATEGORY_HARASSMENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_HATE_SPEECH",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              }
+            ]
           }),
         },
         timeout

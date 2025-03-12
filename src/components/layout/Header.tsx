@@ -138,7 +138,7 @@ export function Header() {
                   Content Generators
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] animate-in slide-in-from-left-4 duration-300 ease-in-out">
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] transform transition-all duration-400 ease-out will-change-transform">
                     <li className="row-span-3 md:col-span-2">
                       <NavigationMenuLink asChild>
                         <Link
@@ -177,7 +177,7 @@ export function Header() {
                   Settings
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] animate-in slide-in-from-right-4 duration-300 ease-in-out">
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] transform transition-all duration-400 ease-out will-change-transform">
                     {settingsItems.map((item) => (
                       <ListItem key={item.href} title={item.title} href={item.href}>
                         {item.description}

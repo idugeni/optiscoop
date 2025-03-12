@@ -32,11 +32,14 @@ export const processTitleResponse = (responseText: string, expectedCount: number
   // Filter out any remaining empty lines and duplicates
   const uniqueTitles = Array.from(new Set(titlesWithoutEndingPeriods));
 
-  // Validate title count
-  if (uniqueTitles.length < expectedCount) {
-    throw new Error(`Tidak cukup judul unik yang dihasilkan. Diharapkan ${expectedCount}, tetapi hanya mendapat ${uniqueTitles.length}`);
+  // If we got fewer titles than expected but at least one valid title,
+  // return what we have instead of throwing an error
+  if (uniqueTitles.length === 0) {
+    throw new Error('Tidak ada judul yang berhasil dihasilkan. Mohon coba lagi dengan deskripsi yang berbeda.');
   }
 
-  // Return exactly the number of titles requested
-  return uniqueTitles.slice(0, expectedCount);
+  // In production mode, we silently accept fewer titles than requested
+
+  // Return up to the number of titles requested, but accept fewer if that's all we got
+  return uniqueTitles.slice(0, Math.min(expectedCount, uniqueTitles.length));
 };

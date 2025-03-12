@@ -56,13 +56,13 @@ export default function DonorsList({ donors }: DonorsListProps) {
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {sortedDonors.map((donor, index) => (
-          <Card key={index} className="overflow-hidden transition-all duration-300 hover:shadow-md">
+          <Card key={index} className="overflow-hidden transition-all duration-300 hover:shadow-md h-full flex flex-col">
             <div className={`h-1 ${index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : index === 2 ? 'bg-amber-700' : 'bg-primary/30'}`}></div>
-            <CardHeader className="pb-2 pt-4">
-              <CardTitle className="flex items-center justify-between text-base">
-                <div className="flex items-center gap-2">
+            <CardHeader className="pb-2 pt-4 flex-none">
+              <CardTitle className="flex flex-col sm:flex-row sm:items-center justify-between text-base gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   {donor.imageUrl ? (
-                    <div className="relative h-10 w-10 overflow-hidden rounded-full border border-muted">
+                    <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-muted">
                       <Image 
                         src={donor.imageUrl} 
                         alt={`${donor.name} logo`} 
@@ -82,17 +82,17 @@ export default function DonorsList({ donors }: DonorsListProps) {
                       />
                     </div>
                   ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-muted">
                       <User className="h-5 w-5 text-muted-foreground" />
                     </div>
                   )}
                   {renderMedal(index)}
                 </div>
-                <span className="text-sm font-medium text-muted-foreground">{donor.amount}</span>
+                <span className="text-sm font-medium text-muted-foreground break-words">{donor.amount}</span>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="font-medium">{donor.name}</p>
+            <CardContent className="flex-grow">
+              <p className="font-medium break-words line-clamp-2 hover:line-clamp-none transition-all duration-300">{donor.name}</p>
             </CardContent>
           </Card>
         ))}

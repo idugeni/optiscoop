@@ -28,16 +28,35 @@ export default function AiNews() {
   const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash-thinking-exp-01-21');
 
   useEffect(() => {
-    const savedApiKey = sessionStorage.getItem('gemini_api_key');
-    const savedModel = sessionStorage.getItem('gemini_model');
+    const loadSettings = () => {
+      const savedApiKey = sessionStorage.getItem('gemini_api_key');
+      const savedModel = sessionStorage.getItem('gemini_model');
+      
+      if (savedApiKey) {
+        setApiKey(savedApiKey);
+      }
+      
+      if (savedModel && savedModel.length > 0) {
+        setSelectedModel(savedModel);
+      }
+    };
     
-    if (savedApiKey) {
-      setApiKey(savedApiKey);
-    }
+    // Load settings initially
+    loadSettings();
     
-    if (savedModel && savedModel.length > 0) {
-      setSelectedModel(savedModel);
-    }
+    // Add event listener for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'gemini_api_key' || e.key === 'gemini_model') {
+        loadSettings();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const generateArticle = async () => {

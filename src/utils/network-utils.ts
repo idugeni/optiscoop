@@ -74,7 +74,7 @@ export const retryWithExponentialBackoff = async<T>(
         maxDelay
       );
       
-      console.log(`Retry attempt ${attempt}/${maxAttempts}. Waiting ${backoffTime/1000} seconds before next attempt...`);
+      // Production mode - no logging
       await new Promise(resolve => setTimeout(resolve, backoffTime));
     }
   }
@@ -95,7 +95,7 @@ export const retryWithExponentialBackoff = async<T>(
 export const retryWithConsistentTimeout = async<T>(
   fn: () => Promise<T>,
   maxAttempts: number = 3,
-  retryDelay: number = 1000
+  retryDelay: number = 3000
 ): Promise<T> => {
   let lastError: Error | unknown;
   
@@ -109,11 +109,14 @@ export const retryWithConsistentTimeout = async<T>(
         break;
       }
       
-      // Use consistent delay between attempts
-      console.log(`Retry attempt ${attempt}/${maxAttempts} with consistent timeout. Waiting ${retryDelay/1000} seconds before next attempt...`);
+      // Production mode - no logging
+      
+      // Add a small delay before retrying to allow for network recovery
       await new Promise(resolve => setTimeout(resolve, retryDelay));
     }
   }
+  
+  // Production mode - no logging
   
   throw lastError;
 };
