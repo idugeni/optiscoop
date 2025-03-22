@@ -58,6 +58,7 @@ const settingsItems = [
     href: "/settings",
     description: "Manage your account settings and preferences.",
   },
+
   {
     title: "Panduan",
     href: "/panduan",
@@ -197,10 +198,26 @@ export function Header() {
             variant="ghost"
             size="icon"
             className="rounded-full hover:bg-accent/50 transition-colors focus:outline-none focus-visible:outline-none focus:ring-0"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={() => {
+              if (theme === 'dark') {
+                setTheme('light')
+              } else if (theme === 'light') {
+                setTheme('system')
+              } else {
+                setTheme('dark')
+              }
+            }}
           >
-            <Sun className="h-5 w-5 transition-transform duration-200 dark:hidden" />
-            <Moon className="h-5 w-5 hidden dark:block" />
+            {theme === 'system' ? (
+              <>
+                <Sun className="h-5 w-5 transition-transform duration-200 dark:hidden" />
+                <Moon className="h-5 w-5 hidden dark:block" />
+              </>
+            ) : theme === 'light' ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
             <span className="sr-only">Toggle theme</span>
           </Button>
 

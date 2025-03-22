@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Copy, CheckCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import ExportButton from '@/components/export/ExportButton';
 
 interface TweetDisplayProps {
   tweets: string[];
@@ -46,6 +47,13 @@ export default function TweetDisplay({ tweets, onCopyTweet }: TweetDisplayProps)
           </CardContent>
         </Card>
       ))}
+      <div className="flex justify-end gap-2 mt-4">
+        <ExportButton content={tweets} filename="thread" format="txt" />
+        <ExportButton content={tweets} filename="thread" format="json" />
+        <ExportButton content={tweets} filename="thread" format="csv" />
+        <ExportButton content={tweets} filename="thread" format="md" />
+        <ExportButton content={tweets} filename="thread" format="thread" />
+      </div>
     </div>
   );
 }

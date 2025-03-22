@@ -7,5 +7,5 @@
 
 // Re-export all components for easier imports elsewhere in the application
 export { processNewsResponse, enforceCharacterLimits } from './text-processor';
-export { fetchWithTimeout } from './network-utils';
+export { fetchWithTimeout } from '@/utils/network-utils';
 export { generateNewsWithRetry } from './generator';

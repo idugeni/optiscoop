@@ -10,6 +10,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale/id';
+import ExportButton from '@/components/export/ExportButton';
 
 interface NewsGeneratorFormProps {
   title: string;
@@ -209,7 +210,7 @@ export default function NewsGeneratorForm({
           ) : article ? (
             <>
               <Sparkles className="mr-2 h-4 w-4" />
-              Hasilkan Lagi
+              Buat Lagi
             </>
           ) : (
             <>
@@ -218,6 +219,14 @@ export default function NewsGeneratorForm({
             </>
           )}
         </Button>
+
+        {article && (
+          <div className="flex justify-end gap-2 mt-4">
+            <ExportButton content={article} filename="article" format="txt" />
+            <ExportButton content={article} filename="article" format="json" />
+            <ExportButton content={article} filename="article" format="csv" />
+          </div>
+        )}
       </div>
 
       {!apiKey && (

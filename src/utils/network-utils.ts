@@ -146,6 +146,39 @@ const calculateBackoff = (attempt: number, baseDelay: number, maxDelay: number):
  * @returns Promise with fetch response
  * @throws Error if all retry attempts fail
  */
+/**
+ * Retry a function with consistent timeout across all attempts
+ * @param fn - Function to retry
+ * @param maxAttempts - Maximum number of retry attempts
+ * @param delayMs - Delay between retries in milliseconds
+ * @returns Promise with the function result
+ */
+export const retryWithConsistentTimeout = async <T>(
+  fn: () => Promise<T>,
+  maxAttempts: number = 3,
+  delayMs: number = 1000
+): Promise<T> => {
+  let lastError: Error = new Error('No attempts made yet');
+  
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (error instanceof Error) {
+        lastError = error;
+      } else {
+        lastError = new Error('An unknown error occurred');
+      }
+      
+      if (attempt < maxAttempts - 1) {
+        await wait(delayMs);
+      }
+    }
+  }
+  
+  throw lastError;
+};
+
 export const fetchWithTimeout = async (
   url: string,
   options: FetchOptions = {},

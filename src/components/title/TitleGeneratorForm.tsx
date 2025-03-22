@@ -1,6 +1,7 @@
 'use client';
 
 import { Sparkles, AlertCircle } from 'lucide-react';
+import ExportButton from '@/components/export/ExportButton';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -145,6 +146,13 @@ export default function TitleGeneratorForm({
               ))}
             </TableBody>
           </Table>
+          {titles.length > 0 && (
+            <div className="flex justify-end gap-2 mt-4">
+              <ExportButton content={titles} filename="titles" format="txt" />
+              <ExportButton content={titles} filename="titles" format="json" />
+              <ExportButton content={titles} filename="titles" format="csv" />
+            </div>
+          )}
         </div>
       )}
     </div>
