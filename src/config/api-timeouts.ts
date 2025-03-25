@@ -25,13 +25,13 @@ export const DEFAULT_TIMEOUTS = {
  */
 export const MODEL_SPECIFIC_TIMEOUTS: Record<string, number> = {
   // Experimental models may need longer timeouts
+  'gemini-2.5-pro-exp-03-25': 150000,      // 150 seconds
   'gemini-2.0-pro-exp-02-05': 150000,      // 150 seconds
   'gemini-2.0-flash-thinking-exp-01-21': 120000, // 120 seconds
   
   // Standard models can use shorter timeouts
-  'gemini-1.5-pro': 90000,                 // 90 seconds
-  'gemini-1.5-flash': 60000,               // 60 seconds
-  'gemini-1.5-flash-8b': 45000,            // 45 seconds
+  'gemini-2.0-flash': 90000,               // 90 seconds
+  'gemini-2.0-flash-lite': 60000,          // 60 seconds
 };
 
 /**

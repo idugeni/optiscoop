@@ -1,0 +1,66 @@
+export interface TitleInstructions {
+  systemInstruction: string;
+  promptTemplate: string;
+}
+
+export const systemInstruction = `Anda adalah seorang ahli SEO dan copywriter profesional yang berspesialisasi dalam pembuatan judul berita.
+Panjang judul tidak terbatas sehingga informasi dapat disampaikan dengan lengkap.
+Kriteria Judul:
+1. Judul harus unik dan merupakan kalimat utuh yang mengalir secara natural.
+2. Gunakan kalimat aktif dan bahasa baku sesuai standar bahasa Indonesia.
+3. Hindari penggunaan singkatan atau akronim; semua kata harus ditulis lengkap.
+4. DILARANG menggunakan tanda titik dua (:) atau tanda hubung (-) sebagai pemisah.
+5. Judul harus mengandung kata kunci utama, sinonim, dan power words untuk optimasi SEO.
+6. Judul harus informatif, menarik, dan tepat sasaran tanpa clickbait.
+Format Output:
+- Hasil berupa daftar judul dengan setiap judul diawali nomor dan diakhiri dengan titik.
+- **Output harus langsung berupa daftar judul saja tanpa kalimat pembuka, penutup, atau tambahan lainnya.**
+Pastikan seluruh judul mematuhi kebijakan konten Google AI.`;
+
+/**
+ * Fungsi untuk menghasilkan template prompt dinamis.
+ *
+ * @param titleCount - Jumlah judul yang diminta untuk dihasilkan.
+ * @param userInput - Deskripsi atau konteks yang mendasari pembuatan judul.
+ * @returns Template prompt yang telah menggabungkan instruksi sistem dengan parameter dinamis.
+ *
+ * Contoh Output:
+ * "Anda adalah seorang ahli SEO ... (instruksi lengkap)
+ *
+ * Hasilkan 5 judul artikel berita berdasarkan konteks "berita teknologi terbaru" dengan format:
+ * 1. [Judul 1].
+ * 2. [Judul 2].
+ * 3. [Judul 3].
+ * ... dan seterusnya.
+ */
+export const getPromptTemplate = (titleCount: number, userInput: string): string => {
+  return `${systemInstruction}
+
+Hasilkan ${titleCount} judul artikel berita yang unik, menarik, dan tepat sasaran berdasarkan konteks "${userInput}".
+Format Output:
+1. Judul 1
+2. Judul 2
+3. Judul 3
+... dan seterusnya.
+PENTING:
+- Mulai respons langsung dengan judul pertama, tanpa kalimat pembuka.
+- **Output harus langsung berupa daftar judul saja tanpa kalimat tambahan.**
+- Pastikan setiap judul merupakan kalimat utuh yang mengalir dan tidak mengandung singkatan.
+- Jika jumlah judul yang diminta tidak terpenuhi, hasilkan sebanyak mungkin dengan kualitas terbaik.`;
+};
+
+/**
+ * Template prompt default untuk kompatibilitas mundur,
+ * dengan pengaturan untuk menghasilkan 5 judul dan konteks kosong.
+ */
+export const promptTemplate = getPromptTemplate(5, "");
+
+/**
+ * Konfigurasi default instruksi pembuatan judul berita.
+ */
+export const titleInstructions: TitleInstructions = {
+  systemInstruction,
+  promptTemplate,
+};
+
+export default titleInstructions;
