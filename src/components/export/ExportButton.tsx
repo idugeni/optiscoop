@@ -7,11 +7,12 @@ import { toast } from 'sonner';
 interface ExportButtonProps {
   content: string | string[];
   filename?: string;
+  title?: string;
   format: 'txt' | 'json' | 'csv' | 'md' | 'thread';
   disabled?: boolean;
 }
 
-export default function ExportButton({ content, filename = 'export', format, disabled = false }: ExportButtonProps) {
+export default function ExportButton({ content, filename, title, format, disabled = false }: ExportButtonProps) {
   const handleExport = () => {
     try {
       let exportContent = '';
@@ -49,7 +50,8 @@ export default function ExportButton({ content, filename = 'export', format, dis
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `${filename}.${format}`;
+      const exportFilename = title || filename || 'export';
+      link.download = `${exportFilename}.${format}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -68,6 +70,7 @@ export default function ExportButton({ content, filename = 'export', format, dis
       size="sm"
       onClick={handleExport}
       disabled={disabled}
+      className="w-full sm:w-auto"
     >
       <Download className="h-4 w-4 mr-2" />
       Export {format.toUpperCase()}
