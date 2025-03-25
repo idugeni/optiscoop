@@ -10,7 +10,7 @@ export default function AiTitle() {
   useMetadata('Pembuat Judul AI - OptiScoop', 'Dapatkan judul artikel yang menarik dengan AI');
 
   const [apiKey, setApiKey] = useState('');
-  const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash-thinking-exp-01-21');
+  const [selectedModel, setSelectedModel] = useState('gemini-2.5-pro-exp-03-25');
   
   useEffect(() => {
     const loadSettings = () => {

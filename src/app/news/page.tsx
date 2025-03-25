@@ -25,7 +25,7 @@ export default function AiNews() {
   const [article, setArticle] = useState('');
 
   const [apiKey, setApiKey] = useState('');
-  const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash-thinking-exp-01-21');
+  const [selectedModel, setSelectedModel] = useState('gemini-2.5-pro-exp-03-25');
 
   useEffect(() => {
     const loadSettings = () => {

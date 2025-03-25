@@ -14,7 +14,7 @@ export default function ApiSettingsPage() {
   useMetadata('Pengaturan API', 'Konfigurasi API key dan model AI untuk layanan OptiScoop');
   
   const [apiKey, setApiKey] = useState('');
-  const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash-thinking-exp-01-21');
+  const [selectedModel, setSelectedModel] = useState('gemini-2.5-pro-exp-03-25');
 
   useEffect(() => {
     // Load saved API key and model from sessionStorage
