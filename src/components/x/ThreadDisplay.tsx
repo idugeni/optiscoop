@@ -22,7 +22,7 @@ export default function ThreadDisplay({ thread }: ThreadDisplayProps) {
         ))}
       </div>
       
-      <div className="flex justify-end gap-2 mt-4">
+      <div className="flex flex-wrap justify-end gap-2 mt-4">
         <ExportButton content={thread} filename="thread" format="txt" />
         <ExportButton content={thread} filename="thread" format="json" />
         <ExportButton content={thread} filename="thread" format="csv" />

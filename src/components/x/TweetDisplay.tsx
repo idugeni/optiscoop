@@ -47,7 +47,7 @@ export default function TweetDisplay({ tweets, onCopyTweet }: TweetDisplayProps)
           </CardContent>
         </Card>
       ))}
-      <div className="flex justify-end gap-2 mt-4">
+      <div className="flex flex-wrap justify-end gap-2 mt-4">
         <ExportButton content={tweets} filename="thread" format="txt" />
         <ExportButton content={tweets} filename="thread" format="json" />
         <ExportButton content={tweets} filename="thread" format="csv" />

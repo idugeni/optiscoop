@@ -147,7 +147,7 @@ export default function TitleGeneratorForm({
             </TableBody>
           </Table>
           {titles.length > 0 && (
-            <div className="flex justify-end gap-2 mt-4">
+            <div className="flex flex-wrap justify-end gap-2 mt-4">
               <ExportButton content={titles} filename="titles" format="txt" />
               <ExportButton content={titles} filename="titles" format="json" />
               <ExportButton content={titles} filename="titles" format="csv" />

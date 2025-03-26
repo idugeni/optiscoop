@@ -1,0 +1,39 @@
+{
+  "navigationLinks": [
+    { "href": "/", "label": "Home" }
+  ],
+  "contentGeneratorItems": [
+    {
+      "title": "Title Generator",
+      "href": "/title",
+      "description": "Create engaging and SEO-friendly article titles."
+    },
+    {
+      "title": "News Generator",
+      "href": "/news",
+      "description": "Generate informative news articles with AI."
+    },
+    {
+      "title": "X/Twitter Thread",
+      "href": "/x",
+      "description": "Convert content into optimized X/Twitter threads."
+    }
+  ],
+  "settingsItems": [
+    {
+      "title": "Settings",
+      "href": "/settings",
+      "description": "Manage your account settings and preferences."
+    },
+    {
+      "title": "Panduan",
+      "href": "/panduan",
+      "description": "User guide and documentation."
+    },
+    {
+      "title": "Donasi",
+      "href": "/donation",
+      "description": "Support us with your donation."
+    }
+  ]
+}

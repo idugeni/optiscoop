@@ -1,6 +1,6 @@
 {
   "name": "optiscoop",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "OptiScoop empowers public relations professionals within Indonesia's Ministry of Immigration and Correctional sectors to produce optimized news and headlines.",
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
     "optiscoop",
     "shadcn ui"
   ],
-  "author": "Eliyanto Sarage",
+  "author": "Eliyanto Sarage <officialelsa21@gmail.com>",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
