@@ -48,11 +48,16 @@ export function NotificationButton() {
           <span className="sr-only">Notifikasi</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-0" align="end">
-        <div className="p-4 border-b border-border/40">
-          <h3 className="font-semibold">Notifikasi</h3>
+      <PopoverContent className="w-[320px] p-0 shadow-lg animate-in fade-in-0 zoom-in-95" align="end">
+        <div className="px-4 py-3 border-b border-border/40 flex items-center justify-between">
+          <h3 className="font-semibold text-base">Notifikasi</h3>
+          {unreadCount > 0 && (
+            <span className="text-xs text-muted-foreground font-medium">
+              {unreadCount} baru
+            </span>
+          )}
         </div>
-        <div className="max-h-[300px] overflow-y-auto">
+        <div className="max-h-[360px] overflow-y-auto scrollbar-thin scrollbar-thumb-accent scrollbar-track-transparent">
           {notifications.length > 0 ? (
             <div className="divide-y divide-border/40">
               {(() => {
@@ -63,33 +68,38 @@ export function NotificationButton() {
                   unreadNotifications.map((notification) => (
                     <div
                       key={notification.id}
-                      className="p-4 bg-accent/30 cursor-pointer hover:bg-accent/50"
+                      className="p-4 bg-accent/20 cursor-pointer hover:bg-accent/30 transition-colors duration-200 relative group"
                       onClick={() => {
                         const newReadNotifications = [...readNotifications, notification.id];
                         setReadNotifications(newReadNotifications);
                         localStorage.setItem('readNotifications', JSON.stringify(newReadNotifications));
                       }}
                     >
-                      <div className="flex justify-between items-start mb-1">
-                        <h4 className="font-medium text-sm">{notification.title}</h4>
-                        <span className="text-xs text-muted-foreground">
+                      <div className="flex justify-between items-start gap-4 mb-2">
+                        <h4 className="font-medium text-sm leading-tight group-hover:text-primary transition-colors duration-200">
+                          {notification.title}
+                        </h4>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
                           {notification.date}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
                         {notification.message}
                       </p>
+                      <div className="absolute left-0 top-0 w-1 h-full bg-primary/50 group-hover:bg-primary transition-colors duration-200" />
                     </div>
                   ))
                 ) : (
-                  <div className="p-4 text-center text-muted-foreground">
-                    Kosong
+                  <div className="py-8 text-center text-muted-foreground">
+                    <span className="block mb-1 text-lg">✨</span>
+                    Semua notifikasi telah dibaca
                   </div>
                 );
               })()} 
             </div>
           ) : (
-            <div className="p-4 text-center text-muted-foreground">
+            <div className="py-8 text-center text-muted-foreground">
+              <span className="block mb-1 text-lg">📭</span>
               Tidak ada notifikasi
             </div>
           )}

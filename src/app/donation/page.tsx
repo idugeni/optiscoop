@@ -13,12 +13,9 @@ export default function DonationPage() {
 
   return (
     <div className="relative min-h-screen">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-[0.015] pointer-events-none"></div>
-      
       {/* Main content */}
       <div className="mx-auto py-10 px-4 max-w-7xl relative z-10">
-        <div className="space-y-24">
+        <div className="space-y-16">
           {/* Hero Section */}
           <HeroSection />
 

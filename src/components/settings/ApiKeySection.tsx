@@ -18,7 +18,7 @@ export default function ApiKeySection({ apiKey, setApiKey }: ApiKeySectionProps)
 
   const handleSaveApiKey = () => {
     if (apiKey) {
-      localStorage.setItem('gemini_api_key', apiKey);
+      sessionStorage.setItem('gemini_api_key', apiKey);
       toast.success('API key berhasil disimpan dan siap digunakan di semua layanan');
     } else {
       toast.error('Masukkan API key terlebih dahulu');
@@ -26,7 +26,7 @@ export default function ApiKeySection({ apiKey, setApiKey }: ApiKeySectionProps)
   };
 
   const handleClearApiKey = () => {
-    localStorage.removeItem('gemini_api_key');
+    sessionStorage.removeItem('gemini_api_key');
     setApiKey('');
     toast.success('API key berhasil dihapus');
   };

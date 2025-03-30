@@ -39,9 +39,8 @@ export default function TitleGenerationSection({ apiKey, selectedModel }: TitleG
     const startTime = Date.now();
 
     try {
-      // Replace the previous info toast with a new one
+      // Dismiss any previous toast
       toast.dismiss();
-      toast.info(`Memulai pembuatan judul dengan model: ${selectedModel}, meminta ${titleCount} judul...`);
       
       const generatedTitles = await generateTitlesWithRetry(input, apiKey, selectedModel, titleCount);
       setTitles(generatedTitles);

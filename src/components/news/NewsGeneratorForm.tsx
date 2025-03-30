@@ -221,7 +221,7 @@ export default function NewsGeneratorForm({
         </Button>
 
         {article && (
-          <div className="flex flex-wrap justify-end gap-2 mt-4">
+          <div className="flex flex-wrap justify-evenly gap-2 mt-4">
             <ExportButton content={article} filename="article" format="txt" />
             <ExportButton content={article} filename="article" format="json" />
             <ExportButton content={article} filename="article" format="csv" />
@@ -257,7 +257,7 @@ export default function NewsGeneratorForm({
       )}
 
       {article && (
-        <div className="mt-8">
+        <div className="mt-6">
           <ArticleDisplay
             title={title}
             article={article}

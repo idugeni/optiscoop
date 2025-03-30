@@ -12,9 +12,9 @@ interface SaveButtonProps {
 export default function SaveButton({ apiKey, selectedModel }: SaveButtonProps) {
   const handleSaveGlobal = () => {
     if (apiKey) {
-      // Save to sessionStorage
-      localStorage.setItem('gemini_api_key', apiKey);
-      localStorage.setItem('gemini_model', selectedModel);
+      // Save to localStorage and trigger storage event
+      sessionStorage.setItem('gemini_api_key', apiKey);
+      sessionStorage.setItem('gemini_model', selectedModel);
       
       // Provide detailed success message
       toast.success(`Pengaturan global berhasil disimpan. API key dan model ${selectedModel} akan digunakan di semua layanan.`);

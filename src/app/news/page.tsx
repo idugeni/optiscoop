@@ -133,6 +133,7 @@ export default function AiNews() {
                 generateArticle={generateArticle}
                 alertInfo={''}
                 alertSuccess={''}
+                selectedModel={selectedModel}
               />
             </CardContent>
           </Card>

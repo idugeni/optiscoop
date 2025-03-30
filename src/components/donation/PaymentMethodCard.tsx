@@ -40,22 +40,22 @@ export default function PaymentMethodCard({ method }: PaymentMethodCardProps) {
   };
 
   return (
-    <div className="transition-all duration-300 hover:shadow-xl hover:border-opacity-100">
+    <div className="animate-in fade-in duration-300">
       <Card 
-        className={`cursor-pointer overflow-hidden backdrop-blur-sm bg-opacity-95 shadow-lg border-t border-white/20 ${method.color} relative group hover:shadow-2xl hover:border-white/40`} 
+        className={`cursor-pointer overflow-hidden backdrop-blur-sm bg-opacity-95 shadow-lg border-t border-white/20 ${method.color} relative group hover:shadow-2xl hover:border-white/40 transition-all duration-300`} 
         onClick={copyToClipboard}
       >
         {/* Enhanced background effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-20 group-hover:opacity-30 transition-opacity"></div>
-        <div className="absolute -top-24 -right-24 w-40 h-40 rounded-full bg-white/10 blur-2xl -z-10 opacity-70 group-hover:w-44 group-hover:h-44 transition-all"></div>
-        <div className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-white/10 blur-2xl -z-10 opacity-50 group-hover:opacity-80 group-hover:w-44 group-hover:h-44 transition-all"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-20 group-hover:opacity-30 transition-all duration-300"></div>
+        <div className="absolute -top-24 -right-24 w-40 h-40 rounded-full bg-white/10 blur-2xl -z-10 opacity-70 group-hover:w-44 group-hover:h-44 transition-all duration-300"></div>
+        <div className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-white/10 blur-2xl -z-10 opacity-50 group-hover:opacity-80 group-hover:w-44 group-hover:h-44 transition-all duration-300"></div>
         
         {/* Subtle shine effect on hover */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform -translate-x-full group-hover:translate-x-full"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-[-200%] group-hover:translate-x-[200%]"></div>
         
         <CardHeader className="pb-2 relative z-10">
           <CardTitle className="flex items-center gap-3">
-            <div className="p-2 rounded-full bg-white/20 backdrop-blur-sm shadow-inner group-hover:bg-white/30 transition-colors">
+            <div className="p-2 rounded-full bg-white/20 backdrop-blur-sm shadow-inner group-hover:bg-white/30 transition-all duration-300">
               {renderIcon()}
             </div>
             <span className="font-semibold tracking-wide">{method.name}</span>
@@ -68,7 +68,7 @@ export default function PaymentMethodCard({ method }: PaymentMethodCardProps) {
               <p className="text-sm font-medium opacity-90">Nomor {method.id === 'bri' ? 'Rekening' : 'Akun'}</p>
               <p className="text-lg font-bold tracking-wider">{method.accountNumber}</p>
             </div>
-            <div className="transition-all duration-200 hover:rotate-15 active:scale-90">
+            <div className="transition-all duration-300 hover:rotate-12 active:scale-90">
               <Button 
                 variant="ghost" 
                 size="icon" 

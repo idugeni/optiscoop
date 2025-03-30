@@ -65,7 +65,7 @@ export default function ArticleDisplay({ title, article, author, location, date 
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 w-full mx-auto">
       {/* Main Article Card */}
       <Card className="overflow-hidden border-primary/10 shadow-md hover:shadow-lg transition-all duration-300">
         <CardHeader className="text-center pb-2 border-b border-primary/5 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5">
@@ -117,9 +117,9 @@ export default function ArticleDisplay({ title, article, author, location, date 
         
         <CardFooter className="flex justify-center gap-3 p-4 border-t border-primary/5 bg-muted/30">
           <Button 
-            variant="default" 
+            variant="outline" 
             onClick={copyToClipboard}
-            className="gap-2 transition-all duration-300 hover:scale-105"
+            className="gap-2 transition-all duration-300 hover:text-primary hover:bg-secondary"
           >
             <Copy className="h-4 w-4" />
             Salin Artikel
@@ -127,7 +127,7 @@ export default function ArticleDisplay({ title, article, author, location, date 
           
           <Button 
             variant="outline" 
-            className="gap-2 transition-all duration-300 hover:scale-105"
+            className="gap-2 transition-all duration-300 hover:bg-secondary"
             onClick={() => {
               if (navigator.share) {
                 navigator.share({
