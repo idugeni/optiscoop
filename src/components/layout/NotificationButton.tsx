@@ -13,12 +13,23 @@ import { notifications } from "@/data/notifications/notifications";
 
 export function NotificationButton() {
   const [unreadCount, setUnreadCount] = useState(0);
+  const [readNotifications, setReadNotifications] = useState<number[]>([]);
 
-  // Count unread notifications
   useEffect(() => {
-    const count = notifications.filter((notification) => !notification.read).length;
+    // Load read notifications from localStorage (only once on mount)
+    const storedReadNotifications = localStorage.getItem('readNotifications');
+    if (storedReadNotifications) {
+      setReadNotifications(JSON.parse(storedReadNotifications));
+    }
+  }, []); // Empty dependency array means this runs once on mount
+
+  useEffect(() => {
+    // Update unread count whenever readNotifications changes
+    const count = notifications.filter(
+      (notification) => !readNotifications.includes(notification.id)
+    ).length;
     setUnreadCount(count);
-  }, []);
+  }, [readNotifications]); // Only run when readNotifications changes
 
   return (
     <Popover>
@@ -44,22 +55,38 @@ export function NotificationButton() {
         <div className="max-h-[300px] overflow-y-auto">
           {notifications.length > 0 ? (
             <div className="divide-y divide-border/40">
-              {notifications.map((notification) => (
-                <div
-                  key={notification.id}
-                  className={`p-4 ${!notification.read ? "bg-accent/30" : ""}`}
-                >
-                  <div className="flex justify-between items-start mb-1">
-                    <h4 className="font-medium text-sm">{notification.title}</h4>
-                    <span className="text-xs text-muted-foreground">
-                      {notification.date}
-                    </span>
+              {(() => {
+                const unreadNotifications = notifications.filter(
+                  (notification) => !readNotifications.includes(notification.id)
+                );
+                return unreadNotifications.length > 0 ? (
+                  unreadNotifications.map((notification) => (
+                    <div
+                      key={notification.id}
+                      className="p-4 bg-accent/30 cursor-pointer hover:bg-accent/50"
+                      onClick={() => {
+                        const newReadNotifications = [...readNotifications, notification.id];
+                        setReadNotifications(newReadNotifications);
+                        localStorage.setItem('readNotifications', JSON.stringify(newReadNotifications));
+                      }}
+                    >
+                      <div className="flex justify-between items-start mb-1">
+                        <h4 className="font-medium text-sm">{notification.title}</h4>
+                        <span className="text-xs text-muted-foreground">
+                          {notification.date}
+                        </span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {notification.message}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-muted-foreground">
+                    Kosong
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    {notification.message}
-                  </p>
-                </div>
-              ))}
+                );
+              })()} 
             </div>
           ) : (
             <div className="p-4 text-center text-muted-foreground">
