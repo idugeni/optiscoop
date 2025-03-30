@@ -31,6 +31,7 @@ interface NewsGeneratorFormProps {
   alertSuccess: string;
   apiKey: string;
   generateArticle: () => Promise<void>;
+  selectedModel: string;
 }
 
 export default function NewsGeneratorForm({
