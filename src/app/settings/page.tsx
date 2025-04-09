@@ -8,7 +8,6 @@ import { useMetadata } from '@/hooks/useMetadata';
 import PageHeader from '@/components/settings/PageHeader';
 import ApiKeySection from '@/components/settings/ApiKeySection';
 import ModelSelectionSection from '@/components/settings/ModelSelectionSection';
-import SaveButton from '@/components/settings/SaveButton';
 
 export default function ApiSettingsPage() {
   useMetadata('Pengaturan API', 'Konfigurasi API key dan model AI untuk layanan OptiScoop');
@@ -55,10 +54,7 @@ export default function ApiSettingsPage() {
             />
           </CardContent>
           <CardFooter>
-            <SaveButton 
-              apiKey={apiKey} 
-              selectedModel={selectedModel} 
-            />
+
           </CardFooter>
         </Card>
       </div>

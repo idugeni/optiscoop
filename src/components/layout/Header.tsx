@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { NotificationButton } from "./NotificationButton";
 import { ThemeToggle } from "./ThemeToggle";
 import { DesktopNavigation } from "./DesktopNavigation";
 import { MobileNavigation } from "./MobileNavigation";
@@ -20,11 +19,8 @@ export function Header() {
         {/* Desktop Navigation */}
         {!isMobile && <DesktopNavigation />}
 
-        {/* Right-side controls: Notifications, Theme toggle & Mobile Menu */}
+        {/* Right-side controls: Theme toggle & Mobile Menu */}
         <nav className="flex items-center gap-3 sm:gap-4">
-          {/* Notification Button */}
-          <NotificationButton />
-          
           {/* Theme Toggle */}
           <ThemeToggle />
 

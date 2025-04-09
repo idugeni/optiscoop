@@ -11,15 +11,21 @@ import Link from 'next/link';
 interface ApiKeySectionProps {
   apiKey: string;
   setApiKey: (value: string) => void;
+  selectedModel?: string;
 }
 
-export default function ApiKeySection({ apiKey, setApiKey }: ApiKeySectionProps) {
+export default function ApiKeySection({ apiKey, setApiKey, selectedModel }: ApiKeySectionProps) {
   const [showApiKey, setShowApiKey] = useState(false);
 
-  const handleSaveApiKey = () => {
+  const handleSaveApiKey = (selectedModel?: string) => {
     if (apiKey) {
       sessionStorage.setItem('gemini_api_key', apiKey);
-      toast.success('API key berhasil disimpan dan siap digunakan di semua layanan');
+      if (selectedModel) {
+        sessionStorage.setItem('gemini_model', selectedModel);
+        toast.success(`Pengaturan global berhasil disimpan. API key dan model ${selectedModel} akan digunakan di semua layanan.`);
+      } else {
+        toast.success('API key berhasil disimpan dan siap digunakan di semua layanan');
+      }
     } else {
       toast.error('Masukkan API key terlebih dahulu');
     }
@@ -64,7 +70,7 @@ export default function ApiKeySection({ apiKey, setApiKey }: ApiKeySectionProps)
           variant="ghost"
           size="icon"
           className="h-8 w-8 rounded-full text-primary hover:text-primary-content"
-          onClick={handleSaveApiKey}
+          onClick={() => handleSaveApiKey(selectedModel)}
           title="Simpan Pengaturan"
         >
           <Save className="h-4 w-4" />
