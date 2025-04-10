@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
     styledComponents: true,
     removeConsole: process.env.NODE_ENV === 'production'
   },
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+  },
   images: {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
