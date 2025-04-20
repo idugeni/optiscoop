@@ -5,38 +5,40 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Save, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 
+/**
+ * Komponen untuk mengelola API key.
+ *
+ * @param {ApiKeySectionProps} props - Properti komponen.
+ */
 interface ApiKeySectionProps {
   apiKey: string;
   setApiKey: (value: string) => void;
-  selectedModel?: string;
 }
 
-export default function ApiKeySection({ apiKey, setApiKey, selectedModel }: ApiKeySectionProps) {
+/**
+ * Komponen untuk mengelola API key.
+ *
+ * @param {ApiKeySectionProps} props - Properti komponen.
+ * @returns {JSX.Element} Komponen API key.
+ */
+export default function ApiKeySection({ apiKey, setApiKey }: ApiKeySectionProps) {
   const [showApiKey, setShowApiKey] = useState(false);
 
-  const handleSaveApiKey = (selectedModel?: string) => {
-    if (apiKey) {
-      sessionStorage.setItem('gemini_api_key', apiKey);
-      if (selectedModel) {
-        sessionStorage.setItem('gemini_model', selectedModel);
-        toast.success(`Pengaturan global berhasil disimpan. API key dan model ${selectedModel} akan digunakan di semua layanan.`);
-      } else {
-        toast.success('API key berhasil disimpan dan siap digunakan di semua layanan');
-      }
-    } else {
-      toast.error('Masukkan API key terlebih dahulu');
-    }
-  };
-
+  /**
+   * Menghapus API key dari penyimpanan sesi.
+   */
   const handleClearApiKey = () => {
     sessionStorage.removeItem('gemini_api_key');
     setApiKey('');
     toast.success('API key berhasil dihapus');
   };
 
+  /**
+   * Mengubah status tampilan API key.
+   */
   const toggleShowApiKey = () => {
     setShowApiKey(!showApiKey);
   };
@@ -66,15 +68,6 @@ export default function ApiKeySection({ apiKey, setApiKey, selectedModel }: ApiK
             {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 rounded-full text-primary hover:text-primary-content"
-          onClick={() => handleSaveApiKey(selectedModel)}
-          title="Simpan Pengaturan"
-        >
-          <Save className="h-4 w-4" />
-        </Button>
         <Button
           variant="ghost"
           size="icon"
